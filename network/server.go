@@ -10,7 +10,7 @@ type Server struct{
 	listener net.Listener
 }
 
-func (s Server) Create(address, port string){
+func (s *Server) Create(address, port string){
 	s.Address = address;
 	s.Port = port;
 	ln, err := net.Listen("tcp", address + ":" + port)
@@ -19,13 +19,18 @@ func (s Server) Create(address, port string){
 		println("Error creating server", err.Error())
 	}
 	for{
+		println("waiting..")
 		conn, err := ln.Accept()
 		if(err != nil){
 			//
 		}
+		println("accepted")
 		status, err := bufio.NewReader(conn).ReadString('\n')
+		if(err != nil){
+			println(err.Error())
+		}
 		println("received", status)
 		conn.Close()
+		println("closed.")
 	}
 }
-
