@@ -1,50 +1,46 @@
 package network
 
-import(
-	"net"
-	"fmt"
+import (
 	"bufio"
-	"bytes"
+	"fmt"
+	"net"
 )
 
-type Client struct{
+type Client struct {
 	TargetIP, TargetPort string
-	Connection *net.Conn
+	Connection           *net.Conn
+	Reader				*bufio.Reader
 }
 
-func (c *Client) Connect(ip string, port string) (err error){
+func (c *Client) Connect(ip string, port string) (err error) {
 	c.TargetIP = ip
 	c.TargetPort = port
-	conn, err := net.Dial("tcp", ip + ":" + port)
+	conn, err := net.Dial("tcp", ip+":"+port)
 	c.Connection = &conn
-	if(err != nil){
+	reader := bufio.NewReader(*(c.Connection))
+	c.Reader = reader
+	if err != nil {
 		println("Error connecting", err.Error())
 		return
 	}
 	return
 }
 
-func (c *Client) Recv() (msg string, err error){
-	buff := bytes.NewBufferString(msg)
-	continueLine := true
-	for(continueLine){
-		line, isPref, erro := bufio.NewReader(*(c.Connection)).ReadLine();
-		continueLine = isPref
-		if( erro != nil){
-			println("Error reading from Socket", erro.Error())
-			err = erro
-			return
-		}
-		buff.Write(line)
+func (c *Client) Recv() (msg string, err error) {
+	line, _, erro := (*c.Reader).ReadLine()
+	err = erro
+	if err != nil {
+		println("Error reading from Socket", erro.Error())
+		return
 	}
-	msg = buff.String()
+	msg = string(line)
 	return
 }
 
-func (c *Client) Sendln(msg string){
-	fmt.Fprintf(*(c.Connection), msg + "\n")
+func (c *Client) Sendln(msg string) {
+	fmt.Fprintf(*(c.Connection), msg+"\n")
 }
 
-func (c *Client) Close(){
+func (c *Client) Close() {
 	(*(c.Connection)).Close()
 }
