@@ -50,8 +50,8 @@ func (core *_ArchiumCore) FireEvent(ev ArchiumEvent) {
 //Core Util
 
 func checkTypes(lType, eType string) bool {
-	//	lType = strings.ToLower(lType)
-	//	eType = strings.ToLower(eType)
+	lType = strings.ToLower(lType)
+	eType = strings.ToLower(eType)
 	lTypeSplit := strings.Split(lType, ".")
 	if lTypeSplit[0] == "*" {
 		return true
