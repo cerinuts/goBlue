@@ -42,7 +42,7 @@ func init() {
 func (core *_ArchiumCore) FireEvent(ev ArchiumEvent) {
 	for _, el := range core.ac.listener {
 		if checkTypes(el.GetType(), ev.EventType) {
-			go el.Trigger(ev)
+			el.Trigger(ev)
 		}
 	}
 }
