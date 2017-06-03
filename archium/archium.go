@@ -1,28 +1,33 @@
+/*
+Copyright (c) 2017 ceriath
+This Package is part of the "goBlue"-Library
+It is licensed under the MIT License
+*/
+
 package archium
 
 import (
+	"github.com/ceriath/goBlue/log"
 	"strings"
 )
 
 //Types
 
-type ArchiumEvent struct{
+type ArchiumEvent struct {
 	EventType, EventSource string
-	Data map[string]string
+	Data                   map[string]string
 }
 
-type ArchiumEventListener interface{
+type ArchiumEventListener interface {
 	Trigger(ae ArchiumEvent)
 	GetType() string
 }
 
-type _ArchiumCore struct{
+type _ArchiumCore struct {
 	ac *archiumCore
 }
 
-
-
-type archiumCore struct{
+type archiumCore struct {
 	listener []ArchiumEventListener
 }
 
@@ -30,51 +35,59 @@ type archiumCore struct{
 
 var ArchiumCore _ArchiumCore
 
-func init(){
+func init() {
 	ArchiumCore.ac = new(archiumCore)
 }
 
-func (core *_ArchiumCore) FireEvent(ev ArchiumEvent){
-	for _,el := range core.ac.listener{
-			if (checkTypes(el.GetType(), ev.EventType)){
-				el.Trigger(ev)
-			}
+func (core *_ArchiumCore) FireEvent(ev ArchiumEvent) {
+	for _, el := range core.ac.listener {
+		if checkTypes(el.GetType(), ev.EventType) {
+			go el.Trigger(ev)
+		}
 	}
 }
 
 //Core Util
 
-func checkTypes(lType, eType string) bool{
-//	lType = strings.ToLower(lType)
-//	eType = strings.ToLower(eType)
+func checkTypes(lType, eType string) bool {
+	//	lType = strings.ToLower(lType)
+	//	eType = strings.ToLower(eType)
 	lTypeSplit := strings.Split(lType, ".")
-	if(lTypeSplit[0] == "*"){
+	if lTypeSplit[0] == "*" {
 		return true
 	}
 	eTypeSplit := strings.Split(eType, ".")
 	index := 0
-	for(lTypeSplit[index] == eTypeSplit[index]){
-			if(index == len(lTypeSplit)-1 && index == len(eTypeSplit)-1){
-				return true
-			}
-			if(len(lTypeSplit)-1 > index && lTypeSplit[index+1] == "*"){
-				return true
-			}
-			if(len(lTypeSplit)-1 == index){
-				break
-			}
-			index++
+	for len(lTypeSplit) > index && len(eTypeSplit) > index && (lTypeSplit[index] == eTypeSplit[index] || lTypeSplit[index] == "*") {
+		//everything matches
+		if index == len(lTypeSplit)-1 && index == len(eTypeSplit)-1 {
+			return true
 		}
+		//next is * and its the last one
+		if len(lTypeSplit)-1 > index && lTypeSplit[index+1] == "*" && len(lTypeSplit)-1 == index+1 {
+			return true
+		}
+		//next is * and not the last one
+		if len(lTypeSplit)-1 > index && lTypeSplit[index+1] == "*" {
+			index++
+			continue
+		}
+		//otherwise
+		if len(lTypeSplit)-1 == index {
+			break
+		}
+		index++
+	}
 	return false
 }
 
-func (core *_ArchiumCore) Register(al ArchiumEventListener){
+func (core *_ArchiumCore) Register(al ArchiumEventListener) {
 	core.ac.listener = append(core.ac.listener, al)
 }
 
 // Events
 
-func CreateEvent(mapsize int) *ArchiumEvent{
+func CreateEvent(mapsize int) *ArchiumEvent {
 	ev := new(ArchiumEvent)
 	ev.Data = make(map[string]string, mapsize)
 	return ev
@@ -82,17 +95,17 @@ func CreateEvent(mapsize int) *ArchiumEvent{
 
 // Debug Listener
 
-type ArchiumDebugListener struct{
-	
+type ArchiumDebugListener struct {
 }
 
-func (adl *ArchiumDebugListener) Trigger(ae ArchiumEvent){
+func (adl *ArchiumDebugListener) Trigger(ae ArchiumEvent) {
 	mapstr := ""
-	//create string of whole map
-	println(ae.EventType, ae.EventSource, mapstr)
+	for k, v := range ae.Data {
+		mapstr = mapstr + " --- " + k + ":" + v
+	}
+	log.P(ae.EventType, ae.EventSource, mapstr)
 }
 
-func (adl *ArchiumDebugListener) GetType() string{
+func (adl *ArchiumDebugListener) GetType() string {
 	return "*"
 }
-
