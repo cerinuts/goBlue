@@ -20,7 +20,7 @@ type ArchiumEvent struct {
 
 type ArchiumEventListener interface {
 	Trigger(ae ArchiumEvent)
-	GetType() string
+	GetTypes() []string
 }
 
 type _ArchiumCore struct {
@@ -41,8 +41,10 @@ func init() {
 
 func (core *_ArchiumCore) FireEvent(ev ArchiumEvent) {
 	for _, el := range core.ac.listener {
-		if checkTypes(el.GetType(), ev.EventType) {
-			el.Trigger(ev)
+		for t := range el.GetTypes() {
+			if checkTypes(t, ev.EventType) {
+				el.Trigger(ev)
+			}
 		}
 	}
 }
@@ -103,9 +105,9 @@ func (adl *ArchiumDebugListener) Trigger(ae ArchiumEvent) {
 	for k, v := range ae.Data {
 		mapstr = mapstr + " --- " + k + ":" + v
 	}
-	log.P(ae.EventType, ae.EventSource, mapstr)
+	log.D(ae.EventType, ae.EventSource, mapstr)
 }
 
-func (adl *ArchiumDebugListener) GetType() string {
-	return "*"
+func (adl *ArchiumDebugListener) GetTypes() string {
+	return []string{"*"}
 }
