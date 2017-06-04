@@ -17,7 +17,7 @@ const LevelPanic, LevelFatal, LevelError, LevelInfo, LevelDebug int = 1, 2, 3, 4
 const LogfileBehaviourDaily, LogfileBehaviourAll int = 1, 0
 const errorlog string = "error.log"
 
-var CurrentLevel = 3
+var CurrentLevel = 4
 var CurrentLogFileBehaviour = 0
 var PrintToStderr, PrintToStdout, PrintToFile = true, false, true
 var Path, Logfilename = ".", "log.log"

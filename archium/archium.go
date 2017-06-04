@@ -7,6 +7,7 @@ It is licensed under the MIT License
 package archium
 
 import (
+	"fmt"
 	"github.com/ceriath/goBlue/log"
 	"strings"
 )
@@ -15,7 +16,7 @@ import (
 
 type ArchiumEvent struct {
 	EventType, EventSource string
-	Data                   map[string]string
+	Data                   map[string]interface{}
 }
 
 type ArchiumEventListener interface {
@@ -36,12 +37,14 @@ type archiumCore struct {
 var ArchiumCore _ArchiumCore
 
 func init() {
-	ArchiumCore.ac = new(archiumCore)
+	if ArchiumCore.ac == nil {
+		ArchiumCore.ac = new(archiumCore)
+	}
 }
 
 func (core *_ArchiumCore) FireEvent(ev ArchiumEvent) {
 	for _, el := range core.ac.listener {
-		for t := range el.GetTypes() {
+		for _, t := range el.GetTypes() {
 			if checkTypes(t, ev.EventType) {
 				el.Trigger(ev)
 			}
@@ -91,7 +94,7 @@ func (core *_ArchiumCore) Register(al ArchiumEventListener) {
 
 func CreateEvent(mapsize int) *ArchiumEvent {
 	ev := new(ArchiumEvent)
-	ev.Data = make(map[string]string, mapsize)
+	ev.Data = make(map[string]interface{}, mapsize)
 	return ev
 }
 
@@ -103,11 +106,11 @@ type ArchiumDebugListener struct {
 func (adl *ArchiumDebugListener) Trigger(ae ArchiumEvent) {
 	mapstr := ""
 	for k, v := range ae.Data {
-		mapstr = mapstr + " --- " + k + ":" + v
+		mapstr = mapstr + " --- " + k + ":" + fmt.Sprintf("%b", v)
 	}
 	log.D(ae.EventType, ae.EventSource, mapstr)
 }
 
-func (adl *ArchiumDebugListener) GetTypes() string {
+func (adl *ArchiumDebugListener) GetTypes() []string {
 	return []string{"*"}
 }
