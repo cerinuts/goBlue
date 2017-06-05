@@ -10,7 +10,8 @@ import (
 	"bufio"
 	"fmt"
 	"net"
-)
+	"time"
+	)
 
 type Client struct {
 	TargetIP, TargetPort string
@@ -21,7 +22,7 @@ type Client struct {
 func (c *Client) Connect(ip string, port string) (err error) {
 	c.TargetIP = ip
 	c.TargetPort = port
-	conn, err := net.Dial("tcp", ip+":"+port)
+	conn, err := net.DialTimeout("tcp", ip+":"+port, time.Duration(10 * time.Second))
 	c.Connection = &conn
 	reader := bufio.NewReader(*(c.Connection))
 	c.Reader = reader

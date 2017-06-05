@@ -1,6 +1,8 @@
 package util
 
 import (
+	"bufio"
+	"fmt"
 	"github.com/ceriath/goBlue/log"
 	"io"
 	"os"
@@ -27,4 +29,9 @@ func SaveCopy(src, dst string) error {
 		return err2
 	}
 	return nil
+}
+
+func WaitForEnter() {
+	fmt.Print("Press 'Enter' to continue...")
+	bufio.NewReader(os.Stdin).ReadBytes('\n')
 }
