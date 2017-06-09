@@ -53,8 +53,8 @@ func NewDataServ() *DataServ {
 	return ds
 }
 
-func (ds *DataServ) Start(port string) {
-	log.F(http.ListenAndServe(":"+port, ds.r))
+func (ds *DataServ) Start(host, port string) {
+	log.F(http.ListenAndServe(host + ":" + port, ds.r))
 }
 
 func (ds *DataServ) Register(route string, jsr JSONResponse) {
