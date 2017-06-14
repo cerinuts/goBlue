@@ -17,12 +17,17 @@ const LevelPanic, LevelFatal, LevelError, LevelInfo, LevelDebug int = 1, 2, 3, 4
 const LogfileBehaviourDaily, LogfileBehaviourAll int = 1, 0
 const errorlog string = "error.log"
 
+//Defines the current loglevel
 var CurrentLevel = 4
+//Defines current logfile behaviour
 var CurrentLogFileBehaviour = 0
+//Define which outputs are used, note that panic always prints to stderr and error file, while fatal and error always 
+//print to error file, if printToFile is true those additionally printed to normal log
 var PrintToStderr, PrintToStdout, PrintToFile = true, false, true
+//Logpath and filename for the normal log
 var Path, Logfilename = ".", "log.log"
 
-//panic
+//log panic, NOTE that this will throw a panic at the end!
 func P(a ...interface{}) {
 	if CurrentLevel < LevelPanic {
 		return
@@ -31,15 +36,14 @@ func P(a ...interface{}) {
 	if PrintToStdout {
 		fmt.Fprintln(os.Stdout, appended)
 	}
-	if PrintToStderr {
 		fmt.Fprintln(os.Stderr, appended)
-	}
+	
 	printToFile(appended, true)
 	panic(appended)
 //	os.Exit(1)
 }
 
-//fatal
+//log fatal
 func F(a ...interface{}) {
 	if CurrentLevel < LevelFatal {
 		return
@@ -54,7 +58,7 @@ func F(a ...interface{}) {
 	printToFile(appended, true)
 }
 
-//error
+//log error
 func E(a ...interface{}) {
 	if CurrentLevel < LevelError {
 		return
@@ -69,7 +73,7 @@ func E(a ...interface{}) {
 	printToFile(appended, true)
 }
 
-//info
+//log info
 func I(a ...interface{}) {
 	if CurrentLevel < LevelInfo {
 		return
@@ -81,7 +85,7 @@ func I(a ...interface{}) {
 	printToFile(appended, false)
 }
 
-//debug
+//log debug
 func D(a ...interface{}) {
 	if CurrentLevel < LevelDebug {
 		return
@@ -93,6 +97,7 @@ func D(a ...interface{}) {
 	printToFile(appended, false)
 }
 
+//print to logfile and errorlog if applicable
 func printToFile(line string, isError bool) {
 	filename := Logfilename
 	if CurrentLogFileBehaviour == LogfileBehaviourDaily {

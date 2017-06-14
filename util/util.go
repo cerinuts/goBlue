@@ -8,6 +8,7 @@ import (
 	"os"
 )
 
+//Savely copies a file from src to dst
 func SaveCopy(src, dst string) error {
 	file, err := os.Open(src)
 	if err != nil {
@@ -31,6 +32,7 @@ func SaveCopy(src, dst string) error {
 	return nil
 }
 
+//Waits for userinput to continue
 func WaitForEnter() {
 	fmt.Print("Press 'Enter' to continue...")
 	bufio.NewReader(os.Stdin).ReadBytes('\n')

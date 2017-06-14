@@ -6,6 +6,7 @@ import (
 	"os"
 )
 
+//Reads a json-config file to any struct
 func ReadJsonConfig(filename string, config interface{}) error {
 	file, _ := os.Open(filename)
 	defer file.Close()
@@ -18,6 +19,7 @@ func ReadJsonConfig(filename string, config interface{}) error {
 	return nil
 }
 
+//writes json-config from any struct
 func WriteJsonConfig(filename string, config interface{}) error {
 	file, err := os.Create(filename + ".tmp")
 	if err != nil {
