@@ -114,9 +114,9 @@ func (core *_ArchiumCore) Deregister(al ArchiumEventListener) {
 // Events
 
 //Create a new event - does NOT fire it!
-func CreateEvent(mapsize int) *ArchiumEvent {
+func CreateEvent() *ArchiumEvent {
 	ev := new(ArchiumEvent)
-	ev.Data = make(map[string]interface{}, mapsize)
+	ev.Data = make(map[string]interface{})
 	return ev
 }
 

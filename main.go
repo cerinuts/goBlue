@@ -27,7 +27,7 @@ func main() {
 	adl := new(archium.ArchiumDebugListener)
 	a := archium.ArchiumCore
 	a.Register(adl)
-	ev := archium.CreateEvent(1)
+	ev := archium.CreateEvent()
 	ev.EventType = "chat.abc.d"
 	ev.EventSource = "MAIN"
 	ev.Data["test"] = "abc"

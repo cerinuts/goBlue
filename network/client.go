@@ -33,11 +33,10 @@ func (c *Client) Connect(ip string, port string) (err error) {
 	return
 }
 
-func (c *Client) Recv() (msg string, err error) {
-	line, _, erro := (*c.Reader).ReadLine()
-	err = erro
+func (c *Client) Recv() (msg string, err error){
+	line, _, err := (*c.Reader).ReadLine()
 	if err != nil {
-		println("Error reading from Socket", erro.Error())
+		println("Error reading from Socket", err.Error())
 		return
 	}
 	msg = string(line)
@@ -48,6 +47,7 @@ func (c *Client) Sendln(msg string) {
 	fmt.Fprintf(*(c.Connection), msg+"\n")
 }
 
-func (c *Client) Close() {
-	(*(c.Connection)).Close()
+func (c *Client) Close() (err error){
+	err = (*(c.Connection)).Close()
+	return
 }
