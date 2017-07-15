@@ -38,9 +38,9 @@ func main() {
 //	ev.Data["test"] = "abc"
 //	a.FireEvent(*ev)
 	cw := clockwork.Clockwork
-	interrupt := cw.RepeatEvery(10 * time.Second, test, true)
-	cw.RunAfter(50 * time.Second, test)
-	time.Sleep(30 * time.Second)
-	close(interrupt)
+	cw.RepeatEvery(10 * time.Second, test, true, "t1")
+	cw.RunAfter(50 * time.Second, test, "t2")
+	time.Sleep(25 * time.Second)
+	cw.InterruptTask("t1")
 	cw.WaitForFinish()
 }
