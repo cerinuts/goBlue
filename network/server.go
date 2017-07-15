@@ -4,6 +4,7 @@ This Package is part of the "goBlue"-Library
 It is licensed under the MIT License
 */
 
+//Network offers various network tools
 package network
 
 import (
@@ -11,6 +12,7 @@ import (
 	"bufio"
 )
 
+//Server is a simple socketserver
 type Server struct{
 	Address, Port string
 	listener net.Listener

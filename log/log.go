@@ -4,6 +4,7 @@ This Package is part of the "goBlue"-Library
 It is licensed under the MIT License
 */
 
+//Log offers various logging options
 package log
 
 import (

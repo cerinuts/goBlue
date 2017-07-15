@@ -2,12 +2,17 @@ package main
 
 import (
 	//"github.com/ceriath/goBlue/network"
-	"github.com/ceriath/goBlue/archium"
-	"github.com/ceriath/goBlue/log"
+//	"github.com/ceriath/goBlue/archium"
+//	"github.com/ceriath/goBlue/log"
 	//	"log"
+	"github.com/ceriath/goBlue/clockwork"
 	"time"
 	//"github.com/ceriath/goBlue/network/client"
 )
+
+func test(){
+	print("tick")
+}
 
 func main() {
 	//	s := new(network.Server)
@@ -21,16 +26,21 @@ func main() {
 	//	c.Sendln("hi")
 	//	println("sent.")
 	//	time.Sleep(2 * time.Second)
-	log.PrintToStdout = true
-	log.CurrentLevel = log.LevelDebug
-	log.CurrentLogFileBehaviour = log.LogfileBehaviourDaily
-	adl := new(archium.ArchiumDebugListener)
-	a := archium.ArchiumCore
-	a.Register(adl)
-	ev := archium.CreateEvent()
-	ev.EventType = "chat.abc.d"
-	ev.EventSource = "MAIN"
-	ev.Data["test"] = "abc"
-	a.FireEvent(*ev)
-	time.Sleep(2 * time.Minute)
+//	log.PrintToStdout = true
+//	log.CurrentLevel = log.LevelDebug
+//	log.CurrentLogFileBehaviour = log.LogfileBehaviourDaily
+//	adl := new(archium.ArchiumDebugListener)
+//	a := archium.ArchiumCore
+//	a.Register(adl)
+//	ev := archium.CreateEvent()
+//	ev.EventType = "chat.abc.d"
+//	ev.EventSource = "MAIN"
+//	ev.Data["test"] = "abc"
+//	a.FireEvent(*ev)
+	cw := clockwork.Clockwork
+	interrupt := cw.RepeatEvery(10 * time.Second, test, true)
+	cw.RunAfter(50 * time.Second, test)
+	time.Sleep(30 * time.Second)
+	close(interrupt)
+	cw.WaitForFinish()
 }

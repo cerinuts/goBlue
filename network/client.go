@@ -4,6 +4,7 @@ This Package is part of the "goBlue"-Library
 It is licensed under the MIT License
 */
 
+//Network offers various network tools
 package network
 
 import (
@@ -13,12 +14,14 @@ import (
 	"time"
 	)
 
+//Client is a simple network socketclient
 type Client struct {
 	TargetIP, TargetPort string
 	Connection           *net.Conn
 	Reader				*bufio.Reader
 }
 
+//Connects to ip + port
 func (c *Client) Connect(ip string, port string) (err error) {
 	c.TargetIP = ip
 	c.TargetPort = port
@@ -33,6 +36,7 @@ func (c *Client) Connect(ip string, port string) (err error) {
 	return
 }
 
+//Waits and receives messages. BLOCKING
 func (c *Client) Recv() (msg string, err error){
 	line, _, err := (*c.Reader).ReadLine()
 	if err != nil {
@@ -43,10 +47,12 @@ func (c *Client) Recv() (msg string, err error){
 	return
 }
 
+//Sends a message
 func (c *Client) Sendln(msg string) {
 	fmt.Fprintf(*(c.Connection), msg+"\n")
 }
 
+//Closes the client
 func (c *Client) Close() (err error){
 	err = (*(c.Connection)).Close()
 	return

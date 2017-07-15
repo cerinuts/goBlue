@@ -1,3 +1,11 @@
+/*
+Copyright (c) 2017 ceriath
+This Package is part of the "goBlue"-Library
+It is licensed under the MIT License
+*/
+
+
+//settings is a simple jsonfile-to-struct api to save settings
 package settings
 
 import (
