@@ -4,6 +4,7 @@ This Package is part of the "goBlue"-Library
 It is licensed under the MIT License
 */
 
+//Network offers various network tools
 package network
 
 import (
@@ -15,29 +16,31 @@ import (
 	"io"
 )
 
+//Dataserv offers an api to serve function calls and/or json responses to http. 
+//Can also wrap a database-like structure to a http-api
 type DataServ struct {
 	r *http.ServeMux
 }
 
-type JSONResponse struct {
-	Data []JSONData `json:"data"`
+type DSJSONResponse struct {
+	Data []DSJSONData `json:"data"`
 }
 
-type JSONSingleResponse struct {
-	Data JSONData `json:"data"`
+type DSJSONSingleResponse struct {
+	Data DSJSONData `json:"data"`
 }
 
-type JSONData struct {
+type DSJSONData struct {
 	Id         string         `json:"id"`
 	Attributes interface{} `json:"attributes"`
 	Type       string      `json:"type"`
 }
 
-type JSONErrors struct {
-	Errs []JSONError `json:"errors"`
+type DSJSONErrors struct {
+	Errs []DSJSONError `json:"errors"`
 }
 
-type JSONError struct {
+type DSJSONError struct {
 	Code int `json:"code"`
 	Source string `json:"source"`
 	Detail string `json:"detail"`
@@ -63,7 +66,7 @@ func (ds *DataServ) Start(host, port string) {
 	log.F(http.ListenAndServe(host + ":" + port, ds.r))
 }
 
-func (ds *DataServ) Register(route string, jsr JSONResponse) {
+func (ds *DataServ) Register(route string, jsr DSJSONResponse) {
 	ds.r.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
 		ds.Headers(w, r)
 		c, err := json.Marshal(jsr)
@@ -76,7 +79,7 @@ func (ds *DataServ) Register(route string, jsr JSONResponse) {
 	})
 }
 
-func (ds *DataServ) RegisterSingle(route string, jsr JSONSingleResponse) {
+func (ds *DataServ) RegisterSingle(route string, jsr DSJSONSingleResponse) {
 	ds.r.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
 		ds.Headers(w, r)
 		c, err := json.Marshal(jsr)
@@ -102,7 +105,7 @@ func (ds *DataServ) RegisterGetFunction(route string, fn DataServFunction) {
 	})
 }
 
-func (ds *DataServ) RegisterWithPost(route string, jsr JSONResponse, fn DataServPostFunction) {
+func (ds *DataServ) RegisterWithPost(route string, jsr DSJSONResponse, fn DataServPostFunction) {
 	ds.r.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
 		ds.Headers(w, r)
 		if r.Method == "POST" {
@@ -129,7 +132,7 @@ func (ds *DataServ) RegisterWithPost(route string, jsr JSONResponse, fn DataServ
 	})
 }
 
-func (ds *DataServ) RegisterSingleWithPost(route string, jsr JSONSingleResponse, fn DataServPostFunction) {
+func (ds *DataServ) RegisterSingleWithPost(route string, jsr DSJSONSingleResponse, fn DataServPostFunction) {
 	ds.r.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
 		ds.Headers(w, r)
 		if r.Method == "POST" {
@@ -178,7 +181,7 @@ func (ds *DataServ) RegisterPostFunction(route string, fn DataServPostFunction) 
 	})
 }
 
-func (ds *DataServ) RegisterWithPatch(route string, jsr JSONResponse, fn DataServPatchFunction) {
+func (ds *DataServ) RegisterWithPatch(route string, jsr DSJSONResponse, fn DataServPatchFunction) {
 	ds.r.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
 		ds.Headers(w, r)
 		if r.Method == "PATCH" {
@@ -200,7 +203,7 @@ func (ds *DataServ) RegisterWithPatch(route string, jsr JSONResponse, fn DataSer
 	})
 }
 
-func (ds *DataServ) RegisterSingleWithPatch(route string, jsr JSONSingleResponse, fn DataServPatchFunction) {
+func (ds *DataServ) RegisterSingleWithPatch(route string, jsr DSJSONSingleResponse, fn DataServPatchFunction) {
 	ds.r.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "PATCH" {
 			ds.Headers(w, r)
@@ -244,10 +247,10 @@ func handleError(err error, w http.ResponseWriter, status int) {
 	w.Write(c)
 }
 
-func getError(ein []customError) JSONErrors {
-	var jse JSONErrors
+func getError(ein []customError) DSJSONErrors {
+	var jse DSJSONErrors
 	for _, e := range ein {
-		jserr := new(JSONError)
+		jserr := new(DSJSONError)
 		jserr.Code = e.status
 		if e.status < 400 {
 			jserr.Detail = "ok"

@@ -12,8 +12,13 @@ import (
 	"fmt"
 	"github.com/ceriath/goBlue/log"
 	"io"
+	"math/rand"
 	"os"
+	"time"
 )
+
+const AppName, VersionMajor, VersionMinor, VersionBuild string = "goBlue/util", "1", "0", "d"
+const FullVersion string = AppName + VersionMajor + "." + VersionMinor + VersionBuild
 
 //Savely copies a file from src to dst
 func SaveCopy(src, dst string) error {
@@ -43,4 +48,30 @@ func SaveCopy(src, dst string) error {
 func WaitForEnter() {
 	fmt.Print("Press 'Enter' to continue...")
 	bufio.NewReader(os.Stdin).ReadBytes('\n')
+}
+
+const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+const (
+	letterIdxBits = 6                    // 6 bits to represent a letter index
+	letterIdxMask = 1<<letterIdxBits - 1 // All 1-bits, as many as letterIdxBits
+	letterIdxMax  = 63 / letterIdxBits   // # of letter indices fitting in 63 bits
+)
+
+func GetRandomAlphanumericString(n int) string {
+	src := rand.NewSource(time.Now().UnixNano())
+	b := make([]byte, n)
+	// A src.Int63() generates 63 random bits, enough for letterIdxMax characters!
+	for i, cache, remain := n-1, src.Int63(), letterIdxMax; i >= 0; {
+		if remain == 0 {
+			cache, remain = src.Int63(), letterIdxMax
+		}
+		if idx := int(cache & letterIdxMask); idx < len(letterBytes) {
+			b[i] = letterBytes[idx]
+			i--
+		}
+		cache >>= letterIdxBits
+		remain--
+	}
+
+	return string(b)
 }

@@ -13,6 +13,9 @@ import (
 	"strings"
 )
 
+const AppName, VersionMajor, VersionMinor, VersionBuild string = "goBlue/archium", "1", "0", "d"
+const FullVersion string = AppName + VersionMajor + "." + VersionMinor + VersionBuild
+
 //Types
 
 //An ArchiumEvent is an event that is fired by something. Data is a map<string, anything>,

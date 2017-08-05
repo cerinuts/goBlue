@@ -14,6 +14,9 @@ import (
 	"time"
 )
 
+const AppName, VersionMajor, VersionMinor, VersionBuild string = "goBlue/log", "1", "0", "d"
+const FullVersion string = AppName + VersionMajor + "." + VersionMinor + VersionBuild
+
 const LevelPanic, LevelFatal, LevelError, LevelInfo, LevelDebug int = 1, 2, 3, 4, 5
 const LogfileBehaviourDaily, LogfileBehaviourAll int = 1, 0
 const errorlog string = "error.log"

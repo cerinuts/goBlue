@@ -14,6 +14,9 @@ import (
 	"os"
 )
 
+const AppName, VersionMajor, VersionMinor, VersionBuild string = "goBlue/settings", "1", "0", "d"
+const FullVersion string = AppName + VersionMajor + "." + VersionMinor + VersionBuild
+
 //Reads a json-config file to any struct
 func ReadJsonConfig(filename string, config interface{}) error {
 	file, _ := os.Open(filename)

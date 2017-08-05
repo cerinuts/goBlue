@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"net"
 	"time"
+	"github.com/ceriath/goBlue/log"
 	)
 
 //Client is a simple network socketclient
@@ -30,7 +31,7 @@ func (c *Client) Connect(ip string, port string) (err error) {
 	reader := bufio.NewReader(*(c.Connection))
 	c.Reader = reader
 	if err != nil {
-		println("Error connecting", err.Error())
+		log.E("Error connecting", err.Error())
 		return
 	}
 	return
@@ -40,7 +41,6 @@ func (c *Client) Connect(ip string, port string) (err error) {
 func (c *Client) Recv() (msg string, err error){
 	line, _, err := (*c.Reader).ReadLine()
 	if err != nil {
-		println("Error reading from Socket", err.Error())
 		return
 	}
 	msg = string(line)

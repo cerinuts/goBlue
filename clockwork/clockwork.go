@@ -14,6 +14,9 @@ import (
 	"errors"
 )
 
+const AppName, VersionMajor, VersionMinor, VersionBuild string = "goBlue/Clockwork", "1", "0", "d"
+const FullVersion string = AppName + VersionMajor + "." + VersionMinor + VersionBuild
+
 var Clockwork _clockwork
 var interrupts map[string]chan bool
 
