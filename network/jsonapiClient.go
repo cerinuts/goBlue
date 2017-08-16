@@ -17,6 +17,10 @@ type JsonError struct {
 	Message string `json:"message"`
 }
 
+func (jso *JsonError) String() string {
+	return string(jso.Status) + "-" + jso.Error + "-" + jso.Message
+}
+
 func (jac *JsonApiClient) Request(url string, header map[string]string, response interface{}) (*JsonError, error) {
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
@@ -83,8 +87,8 @@ func (jac *JsonApiClient) runRequest(req *http.Request, header map[string]string
 		log.E(getErr)
 		return nil, getErr
 	}
-	
-	if res.StatusCode == 204{
+
+	if res.StatusCode == 204 {
 		return nil, nil
 	}
 
@@ -98,18 +102,16 @@ func (jac *JsonApiClient) runRequest(req *http.Request, header map[string]string
 	jsonErr := json.Unmarshal(body, &response)
 
 	if jsonErr != nil {
+		log.I(jsonErr)
 		//try if its an error
 		jsoErr := new(JsonError)
 		marshErr := json.Unmarshal(body, &jsoErr)
 		if marshErr == nil {
 			return jsoErr, nil
 		}
+		log.E(jsonErr)
 		return nil, jsonErr
 	}
-	
-	
-
-	
 
 	return nil, nil
 }
