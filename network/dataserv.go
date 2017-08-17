@@ -11,15 +11,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/ceriath/goBlue/log"
+	"io"
 	"net/http"
 	"net/url"
-	"io"
 )
 
-//Dataserv offers an api to serve function calls and/or json responses to http. 
+//Dataserv offers an api to serve function calls and/or json responses to http.
 //Can also wrap a database-like structure to a http-api
 type DataServ struct {
-	r *http.ServeMux
+	ServeMux *http.ServeMux
 }
 
 type DSJSONResponse struct {
@@ -31,7 +31,7 @@ type DSJSONSingleResponse struct {
 }
 
 type DSJSONData struct {
-	Id         string         `json:"id"`
+	Id         string      `json:"id"`
 	Attributes interface{} `json:"attributes"`
 	Type       string      `json:"type"`
 }
@@ -41,7 +41,7 @@ type DSJSONErrors struct {
 }
 
 type DSJSONError struct {
-	Code int `json:"code"`
+	Code   int    `json:"code"`
 	Source string `json:"source"`
 	Detail string `json:"detail"`
 }
@@ -53,21 +53,21 @@ type customError struct {
 
 type DataServFunction func() error
 type DataServPostFunction func(url.Values) error
-type DataServPatchInputFunctionPointer *func()(io.ReadCloser, error)
+type DataServPatchInputFunctionPointer *func() (io.ReadCloser, error)
 type DataServPatchFunction func(*io.ReadCloser) error
 
 func NewDataServ() *DataServ {
 	ds := new(DataServ)
-	ds.r = http.NewServeMux()
+	ds.ServeMux = http.NewServeMux()
 	return ds
 }
 
 func (ds *DataServ) Start(host, port string) {
-	log.F(http.ListenAndServe(host + ":" + port, ds.r))
+	log.F(http.ListenAndServe(host+":"+port, ds.ServeMux))
 }
 
 func (ds *DataServ) Register(route string, jsr DSJSONResponse) {
-	ds.r.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
+	ds.ServeMux.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
 		ds.Headers(w, r)
 		c, err := json.Marshal(jsr)
 		if err != nil {
@@ -80,7 +80,7 @@ func (ds *DataServ) Register(route string, jsr DSJSONResponse) {
 }
 
 func (ds *DataServ) RegisterSingle(route string, jsr DSJSONSingleResponse) {
-	ds.r.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
+	ds.ServeMux.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
 		ds.Headers(w, r)
 		c, err := json.Marshal(jsr)
 		if err != nil {
@@ -93,7 +93,7 @@ func (ds *DataServ) RegisterSingle(route string, jsr DSJSONSingleResponse) {
 }
 
 func (ds *DataServ) RegisterGetFunction(route string, fn DataServFunction) {
-	ds.r.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
+	ds.ServeMux.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
 		ds.Headers(w, r)
 		err := fn()
 
@@ -106,7 +106,7 @@ func (ds *DataServ) RegisterGetFunction(route string, fn DataServFunction) {
 }
 
 func (ds *DataServ) RegisterWithPost(route string, jsr DSJSONResponse, fn DataServPostFunction) {
-	ds.r.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
+	ds.ServeMux.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
 		ds.Headers(w, r)
 		if r.Method == "POST" {
 			err := r.ParseForm()
@@ -133,7 +133,7 @@ func (ds *DataServ) RegisterWithPost(route string, jsr DSJSONResponse, fn DataSe
 }
 
 func (ds *DataServ) RegisterSingleWithPost(route string, jsr DSJSONSingleResponse, fn DataServPostFunction) {
-	ds.r.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
+	ds.ServeMux.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
 		ds.Headers(w, r)
 		if r.Method == "POST" {
 			err := r.ParseForm()
@@ -162,7 +162,7 @@ func (ds *DataServ) RegisterSingleWithPost(route string, jsr DSJSONSingleRespons
 }
 
 func (ds *DataServ) RegisterPostFunction(route string, fn DataServPostFunction) {
-	ds.r.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
+	ds.ServeMux.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
 		ds.Headers(w, r)
 		err := r.ParseForm()
 		if err != nil {
@@ -182,7 +182,7 @@ func (ds *DataServ) RegisterPostFunction(route string, fn DataServPostFunction) 
 }
 
 func (ds *DataServ) RegisterWithPatch(route string, jsr DSJSONResponse, fn DataServPatchFunction) {
-	ds.r.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
+	ds.ServeMux.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
 		ds.Headers(w, r)
 		if r.Method == "PATCH" {
 			err := fn(&r.Body)
@@ -204,7 +204,7 @@ func (ds *DataServ) RegisterWithPatch(route string, jsr DSJSONResponse, fn DataS
 }
 
 func (ds *DataServ) RegisterSingleWithPatch(route string, jsr DSJSONSingleResponse, fn DataServPatchFunction) {
-	ds.r.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
+	ds.ServeMux.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "PATCH" {
 			ds.Headers(w, r)
 			err := fn(&r.Body)
@@ -227,16 +227,15 @@ func (ds *DataServ) RegisterSingleWithPatch(route string, jsr DSJSONSingleRespon
 }
 
 func (ds *DataServ) Headers(rw http.ResponseWriter, req *http.Request) {
-	if origin := req.Header.Get("Origin"); origin != "" {
-		rw.Header().Set("Access-Control-Allow-Origin", origin)
-		rw.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, PATCH")
-		rw.Header().Set("Access-Control-Allow-Headers",
-			"Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
-	}
 	// Stop here if its Preflighted OPTIONS request
 	if req.Method == "OPTIONS" {
 		return
 	}
+	rw.Header().Set("Access-Control-Allow-Origin", "*")
+	rw.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, PATCH")
+	rw.Header().Set("Access-Control-Allow-Headers",
+		"Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+
 }
 
 func handleError(err error, w http.ResponseWriter, status int) {
