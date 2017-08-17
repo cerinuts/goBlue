@@ -14,7 +14,7 @@ import (
 	"errors"
 )
 
-const AppName, VersionMajor, VersionMinor, VersionBuild string = "goBlue/Clockwork", "1", "0", "d"
+const AppName, VersionMajor, VersionMinor, VersionBuild string = "goBlue/Clockwork", "0", "1", "s"
 const FullVersion string = AppName + VersionMajor + "." + VersionMinor + VersionBuild
 
 var Clockwork _clockwork

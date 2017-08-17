@@ -19,7 +19,7 @@ import (
 	"strconv"
 )
 
-const AppName, VersionMajor, VersionMinor, VersionBuild string = "goBlue/util", "1", "0", "d"
+const AppName, VersionMajor, VersionMinor, VersionBuild string = "goBlue/util", "0", "1", "s"
 const FullVersion string = AppName + VersionMajor + "." + VersionMinor + VersionBuild
 
 //Savely copies a file from src to dst

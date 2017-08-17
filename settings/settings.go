@@ -14,7 +14,7 @@ import (
 	"os"
 )
 
-const AppName, VersionMajor, VersionMinor, VersionBuild string = "goBlue/settings", "1", "0", "d"
+const AppName, VersionMajor, VersionMinor, VersionBuild string = "goBlue/settings", "0", "1", "s"
 const FullVersion string = AppName + VersionMajor + "." + VersionMinor + VersionBuild
 
 //Reads a json-config file to any struct

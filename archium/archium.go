@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-const AppName, VersionMajor, VersionMinor, VersionBuild string = "goBlue/archium", "1", "0", "d"
+const AppName, VersionMajor, VersionMinor, VersionBuild string = "goBlue/archium", "0", "1", "s"
 const FullVersion string = AppName + VersionMajor + "." + VersionMinor + VersionBuild
 
 //Types

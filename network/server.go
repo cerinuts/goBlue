@@ -12,7 +12,7 @@ import (
 	"net"
 )
 
-const AppName, VersionMajor, VersionMinor, VersionBuild string = "goBlue/net", "1", "0", "d"
+const AppName, VersionMajor, VersionMinor, VersionBuild string = "goBlue/net", "0", "1", "s"
 const FullVersion string = AppName + VersionMajor + "." + VersionMinor + VersionBuild
 
 //Server is a simple socketserver
