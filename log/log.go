@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 	"time"
 )
 
@@ -23,11 +24,14 @@ const errorlog string = "error.log"
 
 //Defines the current loglevel
 var CurrentLevel = 4
+
 //Defines current logfile behaviour
 var CurrentLogFileBehaviour = 0
-//Define which outputs are used, note that panic always prints to stderr and error file, while fatal and error always 
+
+//Define which outputs are used, note that panic always prints to stderr and error file, while fatal and error always
 //print to error file, if printToFile is true those additionally printed to normal log
 var PrintToStderr, PrintToStdout, PrintToFile = true, false, true
+
 //Logpath and filename for the normal log
 var Path, Logfilename = ".", "log.log"
 
@@ -36,15 +40,16 @@ func P(a ...interface{}) {
 	if CurrentLevel < LevelPanic {
 		return
 	}
-	appended := fmt.Sprintf("[PANIC] - [%s] - [%s] - %s", time.Now().Format("2006-01-02 15:04:05"), a[0], a[1:])
+	_, file, no, _ := runtime.Caller(1)
+	appended := fmt.Sprintf("[PANIC] - [%s#%d] - [%s] - [%s] - %s", file, no, time.Now().Format("2006-01-02 15:04:05"), a[0], a[1:])
 	if PrintToStdout {
 		fmt.Fprintln(os.Stdout, appended)
 	}
-		fmt.Fprintln(os.Stderr, appended)
-	
+	fmt.Fprintln(os.Stderr, appended)
+
 	printToFile(appended, true)
 	panic(appended)
-//	os.Exit(1)
+	//	os.Exit(1)
 }
 
 //log fatal
@@ -52,7 +57,8 @@ func F(a ...interface{}) {
 	if CurrentLevel < LevelFatal {
 		return
 	}
-	appended := fmt.Sprintf("[FATAL] - [%s] - [%s] - %s", time.Now().Format("2006-01-02 15:04:05"), a[0], a[1:])
+	_, file, no, _ := runtime.Caller(1)
+	appended := fmt.Sprintf("[FATAL] - [%s#%d] - [%s] - [%s] - %s", file, no, time.Now().Format("2006-01-02 15:04:05"), a[0], a[1:])
 	if PrintToStdout {
 		fmt.Fprintln(os.Stdout, appended)
 	}
@@ -67,7 +73,8 @@ func E(a ...interface{}) {
 	if CurrentLevel < LevelError {
 		return
 	}
-	appended := fmt.Sprintf("[ERROR] - [%s] - [%s] - %s", time.Now().Format("2006-01-02 15:04:05"), a[0], a[1:])
+	_, file, no, _ := runtime.Caller(1)
+	appended := fmt.Sprintf("[ERROR] - [%s#%d] - [%s] - [%s] - %s", file, no, time.Now().Format("2006-01-02 15:04:05"), a[0], a[1:])
 	if PrintToStdout {
 		fmt.Fprintln(os.Stdout, appended)
 	}
@@ -82,7 +89,8 @@ func I(a ...interface{}) {
 	if CurrentLevel < LevelInfo {
 		return
 	}
-	appended := fmt.Sprintf("[INFO] - [%s] - [%s] - %s", time.Now().Format("2006-01-02 15:04:05"), a[0], a[1:])
+	_, file, no, _ := runtime.Caller(1)
+	appended := fmt.Sprintf("[INFO] - [%s#%d] - [%s] - [%s] - %s", file, no, time.Now().Format("2006-01-02 15:04:05"), a[0], a[1:])
 	if PrintToStdout {
 		fmt.Fprintln(os.Stdout, appended)
 	}
@@ -94,7 +102,8 @@ func D(a ...interface{}) {
 	if CurrentLevel < LevelDebug {
 		return
 	}
-	appended := fmt.Sprintf("[DEBUG] - [%s] - [%s] - %s", time.Now().Format("2006-01-02 15:04:05"), a[0], a[1:])
+	_, file, no, _ := runtime.Caller(1)
+	appended := fmt.Sprintf("[DEBUG] - [%s#%d] - [%s] - [%s] - %s", file, no, time.Now().Format("2006-01-02 15:04:05"), a[0], a[1:])
 	if PrintToStdout {
 		fmt.Fprintln(os.Stdout, appended)
 	}
