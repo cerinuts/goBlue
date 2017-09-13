@@ -117,7 +117,6 @@ func NormalizeDurationStringYMDHMS(year, month, day, hour, min, sec int) string 
 	if sec > 0 {
 		res = res + strconv.Itoa(sec) + " seconds "
 	}
-	fmt.Printf("%d %d %d %d %d %d ", year, month, day, hour, min, sec)
 	return strings.TrimRight(res, " ")
 }
 

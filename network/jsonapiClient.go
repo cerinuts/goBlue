@@ -6,6 +6,7 @@ import (
 	"github.com/ceriath/goBlue/log"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 )
 
 type JsonApiClient struct {
@@ -17,8 +18,15 @@ type JsonError struct {
 	Message string `json:"message"`
 }
 
+type JsonError2 struct {
+	Status struct {
+		StatusCode int    `json:"status_code"`
+		Message    string `json:"message"`
+	} `json:"status"`
+}
+
 func (jso *JsonError) String() string {
-	return string(jso.Status) + "-" + jso.Error + "-" + jso.Message
+	return strconv.Itoa(jso.Status) + "-" + jso.Error + "-" + jso.Message
 }
 
 func (jac *JsonApiClient) Request(url string, header map[string]string, response interface{}) (*JsonError, error) {
@@ -98,20 +106,27 @@ func (jac *JsonApiClient) runRequest(req *http.Request, header map[string]string
 		return nil, readErr
 	}
 
-	//try to unmarshal
-	jsonErr := json.Unmarshal(body, &response)
-
-	if jsonErr != nil {
-		log.I(jsonErr)
+	if res.StatusCode == 200 {
+		json.Unmarshal(body, &response)
+		return nil, nil
+	} else {
 		//try if its an error
 		jsoErr := new(JsonError)
 		marshErr := json.Unmarshal(body, &jsoErr)
 		if marshErr == nil {
 			return jsoErr, nil
 		}
-		log.E(jsonErr)
-		return nil, jsonErr
+		//try if its an error2
+		jsoErr2 := new(JsonError2)
+		marshErr = json.Unmarshal(body, &jsoErr2)
+		if marshErr == nil {
+			jsoErr.Status = jsoErr2.Status.StatusCode
+			jsoErr.Message = jsoErr2.Status.Message
+			jsoErr.Error = jsoErr2.Status.Message
+			return jsoErr, nil
+		}
+		//otherwise some error
+		log.E(marshErr)
+		return nil, marshErr
 	}
-
-	return nil, nil
 }

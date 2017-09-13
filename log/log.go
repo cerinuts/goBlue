@@ -36,7 +36,7 @@ func P(a ...interface{}) {
 	if CurrentLevel < LevelPanic {
 		return
 	}
-	appended := fmt.Sprintf("[PANIC] - [%s]: %s", time.Now().Format("2006-01-02 15:04:05"), a)
+	appended := fmt.Sprintf("[PANIC] - [%s] - [%s] - %s", time.Now().Format("2006-01-02 15:04:05"), a[0], a[1:])
 	if PrintToStdout {
 		fmt.Fprintln(os.Stdout, appended)
 	}
@@ -52,7 +52,7 @@ func F(a ...interface{}) {
 	if CurrentLevel < LevelFatal {
 		return
 	}
-	appended := fmt.Sprintf("[FATAL] - [%s]: %s", time.Now().Format("2006-01-02 15:04:05"), a)
+	appended := fmt.Sprintf("[FATAL] - [%s] - [%s] - %s", time.Now().Format("2006-01-02 15:04:05"), a[0], a[1:])
 	if PrintToStdout {
 		fmt.Fprintln(os.Stdout, appended)
 	}
@@ -67,7 +67,7 @@ func E(a ...interface{}) {
 	if CurrentLevel < LevelError {
 		return
 	}
-	appended := fmt.Sprintf("[ERROR] - [%s]: %s", time.Now().Format("2006-01-02 15:04:05"), a)
+	appended := fmt.Sprintf("[ERROR] - [%s] - [%s] - %s", time.Now().Format("2006-01-02 15:04:05"), a[0], a[1:])
 	if PrintToStdout {
 		fmt.Fprintln(os.Stdout, appended)
 	}
@@ -82,7 +82,7 @@ func I(a ...interface{}) {
 	if CurrentLevel < LevelInfo {
 		return
 	}
-	appended := fmt.Sprintf("[INFO] - [%s]: %s", time.Now().Format("2006-01-02 15:04:05"), a)
+	appended := fmt.Sprintf("[INFO] - [%s] - [%s] - %s", time.Now().Format("2006-01-02 15:04:05"), a[0], a[1:])
 	if PrintToStdout {
 		fmt.Fprintln(os.Stdout, appended)
 	}
@@ -94,7 +94,7 @@ func D(a ...interface{}) {
 	if CurrentLevel < LevelDebug {
 		return
 	}
-	appended := fmt.Sprintf("[DEBUG] - [%s]: %s", time.Now().Format("2006-01-02 15:04:05"), a)
+	appended := fmt.Sprintf("[DEBUG] - [%s] - [%s] - %s", time.Now().Format("2006-01-02 15:04:05"), a[0], a[1:])
 	if PrintToStdout {
 		fmt.Fprintln(os.Stdout, appended)
 	}
