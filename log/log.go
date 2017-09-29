@@ -41,6 +41,7 @@ func P(a ...interface{}) {
 		return
 	}
 	_, file, no, _ := runtime.Caller(1)
+	_, file = filepath.Split(file)
 	appended := fmt.Sprintf("[PANIC] - [%s#%d] - [%s] - [%s] - %s", file, no, time.Now().Format("2006-01-02 15:04:05"), a[0], a[1:])
 	if PrintToStdout {
 		fmt.Fprintln(os.Stdout, appended)
@@ -58,6 +59,7 @@ func F(a ...interface{}) {
 		return
 	}
 	_, file, no, _ := runtime.Caller(1)
+	_, file = filepath.Split(file)
 	appended := fmt.Sprintf("[FATAL] - [%s#%d] - [%s] - [%s] - %s", file, no, time.Now().Format("2006-01-02 15:04:05"), a[0], a[1:])
 	if PrintToStdout {
 		fmt.Fprintln(os.Stdout, appended)
@@ -74,6 +76,7 @@ func E(a ...interface{}) {
 		return
 	}
 	_, file, no, _ := runtime.Caller(1)
+	_, file = filepath.Split(file)
 	appended := fmt.Sprintf("[ERROR] - [%s#%d] - [%s] - [%s] - %s", file, no, time.Now().Format("2006-01-02 15:04:05"), a[0], a[1:])
 	if PrintToStdout {
 		fmt.Fprintln(os.Stdout, appended)
@@ -90,6 +93,7 @@ func I(a ...interface{}) {
 		return
 	}
 	_, file, no, _ := runtime.Caller(1)
+	_, file = filepath.Split(file)
 	appended := fmt.Sprintf("[INFO] - [%s#%d] - [%s] - [%s] - %s", file, no, time.Now().Format("2006-01-02 15:04:05"), a[0], a[1:])
 	if PrintToStdout {
 		fmt.Fprintln(os.Stdout, appended)
@@ -103,6 +107,7 @@ func D(a ...interface{}) {
 		return
 	}
 	_, file, no, _ := runtime.Caller(1)
+	_, file = filepath.Split(file)
 	appended := fmt.Sprintf("[DEBUG] - [%s#%d] - [%s] - [%s] - %s", file, no, time.Now().Format("2006-01-02 15:04:05"), a[0], a[1:])
 	if PrintToStdout {
 		fmt.Fprintln(os.Stdout, appended)
