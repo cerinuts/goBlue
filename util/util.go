@@ -4,7 +4,7 @@ This Package is part of the "goBlue"-Library
 It is licensed under the MIT License
 */
 
-//Offers misc utility functions
+//Package util offers misc utility functions
 package util
 
 import (
@@ -14,15 +14,15 @@ import (
 	"io"
 	"math/rand"
 	"os"
+	"strconv"
 	"strings"
 	"time"
-	"strconv"
 )
 
 const AppName, VersionMajor, VersionMinor, VersionBuild string = "goBlue/util", "0", "1", "s"
 const FullVersion string = AppName + VersionMajor + "." + VersionMinor + VersionBuild
 
-//Savely copies a file from src to dst
+//SaveCopy savely copies a file from src to dst
 func SaveCopy(src, dst string) error {
 	file, err := os.Open(src)
 	if err != nil {
@@ -59,6 +59,7 @@ const (
 	letterIdxMax  = 63 / letterIdxBits   // # of letter indices fitting in 63 bits
 )
 
+//GetRandomAlphanumericString returns a random alphanumeric string of length n
 func GetRandomAlphanumericString(n int) string {
 	src := rand.NewSource(time.Now().UnixNano())
 	b := make([]byte, n)
@@ -78,6 +79,8 @@ func GetRandomAlphanumericString(n int) string {
 	return string(b)
 }
 
+//NormalizeDurationStringHMS formats a time d into a string containing "x hours x minutes x seconds"
+//while it removes 0 valued parts
 func NormalizeDurationStringHMS(d time.Duration) string {
 	seconds := int(d.Seconds())
 	minutes := int(seconds / 60)
@@ -97,6 +100,7 @@ func NormalizeDurationStringHMS(d time.Duration) string {
 	return str
 }
 
+//NormalizeDurationStringYMDHMS formats the output of TimeDifferenceYMDHMS into a string
 func NormalizeDurationStringYMDHMS(year, month, day, hour, min, sec int) string {
 	var res string
 	if year > 0 {
@@ -120,6 +124,7 @@ func NormalizeDurationStringYMDHMS(year, month, day, hour, min, sec int) string 
 	return strings.TrimRight(res, " ")
 }
 
+//TimeDifferenceYMDHMS calculates the difference between times a and b and outputs a the difference as integers
 func TimeDifferenceYMDHMS(a, b time.Time) (year, month, day, hour, min, sec int) {
 	if a.Location() != b.Location() {
 		b = b.In(a.Location())

@@ -4,7 +4,7 @@ This Package is part of the "goBlue"-Library
 It is licensed under the MIT License
 */
 
-//settings is a simple jsonfile-to-struct api to save settings
+//Package settings is a simple jsonfile-to-struct api to save settings
 package settings
 
 import (
@@ -17,7 +17,7 @@ import (
 const AppName, VersionMajor, VersionMinor, VersionBuild string = "goBlue/settings", "0", "1", "s"
 const FullVersion string = AppName + VersionMajor + "." + VersionMinor + VersionBuild
 
-//Reads a json-config file to any struct
+//ReadJsonConfig Reads a json-config file to any struct
 func ReadJsonConfig(filename string, config interface{}) error {
 	file, err := os.Open(filename)
 	if err != nil {
@@ -33,7 +33,7 @@ func ReadJsonConfig(filename string, config interface{}) error {
 	return nil
 }
 
-//writes json-config from any struct
+//WriteJsonConfig writes json-config from any struct
 func WriteJsonConfig(filename string, config interface{}) error {
 	dir, _ := filepath.Split(filename)
 	err := os.MkdirAll(dir, os.ModePerm)

@@ -1,7 +1,13 @@
+/*
+Copyright (c) 2017 ceriath
+This Package is part of the "goBlue"-Library
+It is licensed under the MIT License
+*/
+
+//Package network offers various network tools
 package network
 
 import (
-//	"fmt"
 	"github.com/ceriath/goBlue/log"
 	"sync"
 	"time"
@@ -10,6 +16,10 @@ import (
 var mutex sync.Mutex
 var tokenMutex sync.Mutex
 
+//Ratelimiter implements a tokenbucket that supports bursts.
+//A burst is an additional number of tokens that can be issued in a short time increasing the cooldown.
+//Usually the ratelimiter will issue tokens on a constant rate, e.g. 2 per second. 
+//when burst is enabled you can request e.g. 30 in 2 seconds but wait 15 seconds until issuing new tokens
 type Ratelimiter struct {
 	Name            string
 	limit           int
@@ -23,6 +33,7 @@ type Ratelimiter struct {
 	queue           []chan int
 }
 
+//Init intializes the ratelimiter with an identifier name, and a limit of tokens that are issued during a duration reset
 func (rl *Ratelimiter) Init(name string, limit int, reset time.Duration) {
 	rl.limit = limit
 	rl.Name = name
@@ -32,6 +43,7 @@ func (rl *Ratelimiter) Init(name string, limit int, reset time.Duration) {
 	rl.resetSignal = make(chan int, 1)
 }
 
+//InitBurst inits a burst limit of tokens that are issued during duration reset
 func (rl *Ratelimiter) InitBurst(limit int, reset time.Duration) {
 	rl.burstLimit = limit - rl.limit
 	rl.burstTokens = limit - rl.limit

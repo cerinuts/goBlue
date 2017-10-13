@@ -35,7 +35,7 @@ func init() {
 	}
 }
 
-//run fn every duration, if onStart is set, run first on function call
+//RepeatEvery runs fn every duration, if onStart is set, run first on function call
 func (cw *_clockwork) RepeatEvery(d time.Duration, fn func(), onStart bool, id string){
 	interrupt := make(chan bool)
 	if onStart {
@@ -62,7 +62,7 @@ func (cw *_clockwork) RepeatEvery(d time.Duration, fn func(), onStart bool, id s
 	interrupts[id] = interrupt
 }
 
-//runs fn after duration
+//RunAfter runs fn after duration
 func (cw *_clockwork) RunAfter(d time.Duration, fn func(), id string){
 	interrupt := make(chan bool)
 	run := make(chan bool)
@@ -85,6 +85,7 @@ func (cw *_clockwork) RunAfter(d time.Duration, fn func(), id string){
 	interrupts[id] = interrupt
 }
 
+//InterruptTask interrupts stops task with id and prevents it from running (again)
 func (cw *_clockwork) InterruptTask(id string) error{
 	interrupt := interrupts[id]
 	if interrupt == nil{

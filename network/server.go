@@ -15,12 +15,13 @@ import (
 const AppName, VersionMajor, VersionMinor, VersionBuild string = "goBlue/net", "0", "1", "s"
 const FullVersion string = AppName + VersionMajor + "." + VersionMinor + VersionBuild
 
-//Server is a simple socketserver
+//Server is a simple socketserver. Not doing anything, pretty useless atm. Seriously.
 type Server struct {
 	Address, Port string
 	listener      net.Listener
 }
 
+//Create starts a echoserver on address:port. probably.
 func (s *Server) Create(address, port string) {
 	s.Address = address
 	s.Port = port
@@ -40,6 +41,7 @@ func (s *Server) Create(address, port string) {
 		if err != nil {
 			println(err.Error())
 		}
+		conn.Write([]byte(status))
 		println("received", status)
 		conn.Close()
 		println("closed.")

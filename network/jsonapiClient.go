@@ -1,3 +1,10 @@
+/*
+Copyright (c) 2017 ceriath
+This Package is part of the "goBlue"-Library
+It is licensed under the MIT License
+*/
+
+//Package network offers various network tools
 package network
 
 import (
@@ -25,10 +32,13 @@ type JsonError2 struct {
 	} `json:"status"`
 }
 
+//String converts a json error to pretty loggable/printable string
 func (jso *JsonError) String() string {
 	return strconv.Itoa(jso.Status) + "-" + jso.Error + "-" + jso.Message
 }
 
+//Request calls url with GET and sets header. Tries to parse repsonse into any struct, returns jsonerror if request returned one
+//or error on internal errors
 func (jac *JsonApiClient) Request(url string, header map[string]string, response interface{}) (*JsonError, error) {
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
@@ -39,6 +49,8 @@ func (jac *JsonApiClient) Request(url string, header map[string]string, response
 	return jac.runRequest(req, header, response)
 }
 
+//Delete calls url with DELETE and sets header. Tries to parse repsonse into any struct, returns jsonerror if request returned one
+//or error on internal errors
 func (jac *JsonApiClient) Delete(url string, header map[string]string, response interface{}) (*JsonError, error) {
 	req, err := http.NewRequest(http.MethodDelete, url, nil)
 	if err != nil {
@@ -49,6 +61,8 @@ func (jac *JsonApiClient) Delete(url string, header map[string]string, response 
 	return jac.runRequest(req, header, response)
 }
 
+//Put calls url with PUT with given data and sets header. Tries to parse repsonse into any struct, returns jsonerror if request returned one
+//or error on internal errors
 func (jac *JsonApiClient) Put(url string, header map[string]string, data interface{}, response interface{}) (*JsonError, error) {
 
 	body, marshErr := json.Marshal(data)
@@ -66,6 +80,8 @@ func (jac *JsonApiClient) Put(url string, header map[string]string, data interfa
 
 }
 
+//Post calls url with POST with given data and sets header. Tries to parse repsonse into any struct, returns jsonerror if request returned one
+//or error on internal errors
 func (jac *JsonApiClient) Post(url string, header map[string]string, data interface{}, response interface{}) (*JsonError, error) {
 
 	body, marshErr := json.Marshal(data)
@@ -83,6 +99,7 @@ func (jac *JsonApiClient) Post(url string, header map[string]string, data interf
 
 }
 
+//runRequest actually runs the request prepared by functions above 
 func (jac *JsonApiClient) runRequest(req *http.Request, header map[string]string, response interface{}) (*JsonError, error) {
 	cli := new(http.Client)
 
