@@ -10,7 +10,7 @@ package network
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/ceriath/goBlue/log"
+	"gitlab.ceriath.net/libs/goBlue/log"
 	"io"
 	"net/http"
 	"net/url"

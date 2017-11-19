@@ -9,7 +9,7 @@ package archium
 
 import (
 	"fmt"
-	"github.com/ceriath/goBlue/log"
+	"gitlab.ceriath.net/libs/goBlue/log"
 	"strings"
 )
 

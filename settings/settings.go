@@ -9,7 +9,7 @@ package settings
 
 import (
 	"encoding/json"
-	"github.com/ceriath/goBlue/log"
+	"gitlab.ceriath.net/libs/goBlue/log"
 	"os"
 	"path/filepath"
 )

@@ -10,7 +10,7 @@ package network
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/ceriath/goBlue/log"
+	"gitlab.ceriath.net/libs/goBlue/log"
 	"io/ioutil"
 	"net/http"
 	"strconv"

@@ -10,7 +10,7 @@ package util
 import (
 	"bufio"
 	"fmt"
-	"github.com/ceriath/goBlue/log"
+	"gitlab.ceriath.net/libs/goBlue/log"
 	"io"
 	"math/rand"
 	"os"

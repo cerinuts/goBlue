@@ -12,7 +12,7 @@ import (
 	"fmt"
 	"net"
 	"time"
-	"github.com/ceriath/goBlue/log"
+	"gitlab.ceriath.net/libs/goBlue/log"
 	)
 
 //Client is a simple network socketclient

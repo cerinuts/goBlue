@@ -8,7 +8,7 @@ It is licensed under the MIT License
 package network
 
 import (
-	"github.com/ceriath/goBlue/log"
+	"gitlab.ceriath.net/libs/goBlue/log"
 	"sync"
 	"time"
 )
