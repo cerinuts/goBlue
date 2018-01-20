@@ -14,6 +14,8 @@ import (
 	"io"
 	"math/rand"
 	"os"
+	"os/exec"
+	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -170,4 +172,18 @@ func TimeDifferenceYMDHMS(a, b time.Time) (year, month, day, hour, min, sec int)
 	}
 
 	return
+}
+
+func OpenWebsiteInDefaultBrowser(url string) bool {
+	var args []string
+	switch runtime.GOOS {
+	case "darwin":
+		args = []string{"open"}
+	case "windows":
+		args = []string{"rundll32", "url.dll,FileProtocolHandler"}
+	default:
+		args = []string{"xdg-open"}
+	}
+	cmd := exec.Command(args[0], append(args[1:], url)...)
+	return cmd.Start() == nil
 }
