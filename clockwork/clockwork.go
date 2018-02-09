@@ -8,10 +8,11 @@ It is licensed under the MIT License
 package clockwork
 
 import (
-	"gitlab.ceriath.net/libs/goBlue/log"
+	"errors"
 	"sync"
 	"time"
-	"errors"
+
+	"gitlab.ceriath.net/libs/goBlue/log"
 )
 
 const AppName, VersionMajor, VersionMinor, VersionBuild string = "goBlue/Clockwork", "0", "1", "s"
@@ -36,7 +37,7 @@ func init() {
 }
 
 //RepeatEvery runs fn every duration, if onStart is set, run first on function call
-func (cw *_clockwork) RepeatEvery(d time.Duration, fn func(), onStart bool, id string){
+func (cw *_clockwork) RepeatEvery(d time.Duration, fn func(), onStart bool, id string) {
 	interrupt := make(chan bool)
 	if onStart {
 		cw.cw.Waitgroup.Add(1)
@@ -63,7 +64,7 @@ func (cw *_clockwork) RepeatEvery(d time.Duration, fn func(), onStart bool, id s
 }
 
 //RunAfter runs fn after duration
-func (cw *_clockwork) RunAfter(d time.Duration, fn func(), id string){
+func (cw *_clockwork) RunAfter(d time.Duration, fn func(), id string) {
 	interrupt := make(chan bool)
 	run := make(chan bool)
 	go func() {
@@ -86,9 +87,9 @@ func (cw *_clockwork) RunAfter(d time.Duration, fn func(), id string){
 }
 
 //InterruptTask interrupts stops task with id and prevents it from running (again)
-func (cw *_clockwork) InterruptTask(id string) error{
+func (cw *_clockwork) InterruptTask(id string) error {
 	interrupt := interrupts[id]
-	if interrupt == nil{
+	if interrupt == nil {
 		return errors.New("Task not found:" + id)
 	}
 	close(interrupt)
