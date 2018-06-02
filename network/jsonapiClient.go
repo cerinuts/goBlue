@@ -10,10 +10,11 @@ package network
 import (
 	"bytes"
 	"encoding/json"
-	"gitlab.ceriath.net/libs/goBlue/log"
 	"io/ioutil"
 	"net/http"
 	"strconv"
+
+	"gitlab.ceriath.net/libs/goBlue/log"
 )
 
 type JsonApiClient struct {
@@ -99,7 +100,7 @@ func (jac *JsonApiClient) Post(url string, header map[string]string, data interf
 
 }
 
-//runRequest actually runs the request prepared by functions above 
+//runRequest actually runs the request prepared by functions above
 func (jac *JsonApiClient) runRequest(req *http.Request, header map[string]string, response interface{}) (*JsonError, error) {
 	cli := new(http.Client)
 
@@ -143,7 +144,7 @@ func (jac *JsonApiClient) runRequest(req *http.Request, header map[string]string
 			return jsoErr, nil
 		}
 		//otherwise some error
-		log.E(marshErr)
+		log.E(marshErr, res.StatusCode, string(body))
 		return nil, marshErr
 	}
 }
