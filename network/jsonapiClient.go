@@ -13,6 +13,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"time"
 
 	"gitlab.ceriath.net/libs/goBlue/log"
 )
@@ -102,7 +103,9 @@ func (jac *JsonApiClient) Post(url string, header map[string]string, data interf
 
 //runRequest actually runs the request prepared by functions above
 func (jac *JsonApiClient) runRequest(req *http.Request, header map[string]string, response interface{}) (*JsonError, error) {
-	cli := new(http.Client)
+	cli := &http.Client{
+		Timeout: time.Second * 10,
+	}
 
 	for k, v := range header {
 		req.Header.Set(k, v)
@@ -113,6 +116,7 @@ func (jac *JsonApiClient) runRequest(req *http.Request, header map[string]string
 		log.E(getErr)
 		return nil, getErr
 	}
+	defer res.Body.Close()
 
 	if res.StatusCode == 204 {
 		return nil, nil
