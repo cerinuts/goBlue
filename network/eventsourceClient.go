@@ -18,7 +18,7 @@ const PARSE_CODE_OK = 0
 const PARSE_CODE_DISPATCH = 1
 
 type EventsourceClient struct {
-	stream *EventStream
+	Stream *EventStream
 }
 
 type Event struct {
@@ -53,7 +53,7 @@ func (ec *EventsourceClient) Subscribe(url string) (*EventStream, error) {
 		EventQueue: make(chan Event),
 	}
 
-	ec.stream = stream
+	ec.Stream = stream
 
 	reader, err := stream.connect()
 	if err != nil {
@@ -64,12 +64,12 @@ func (ec *EventsourceClient) Subscribe(url string) (*EventStream, error) {
 }
 
 func (ec *EventsourceClient) Close() {
-	if ec.stream.closed {
+	if ec.Stream.closed {
 		return
 	}
 
-	ec.stream.closed = true
-	close(ec.stream.EventQueue)
+	ec.Stream.closed = true
+	close(ec.Stream.EventQueue)
 }
 
 func (stream *EventStream) connect() (r io.ReadCloser, err error) {
