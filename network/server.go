@@ -12,9 +12,6 @@ import (
 	"net"
 )
 
-const AppName, VersionMajor, VersionMinor, VersionBuild string = "goBlue/net", "0", "1", "s"
-const FullVersion string = AppName + VersionMajor + "." + VersionMinor + VersionBuild
-
 //Server is a simple socketserver. Not doing anything, pretty useless atm. Seriously.
 type Server struct {
 	Address, Port string
