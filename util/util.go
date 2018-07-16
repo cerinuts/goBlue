@@ -10,7 +10,6 @@ package util
 import (
 	"bufio"
 	"fmt"
-	"gitlab.ceriath.net/libs/goBlue/log"
 	"io"
 	"math/rand"
 	"os"
@@ -19,6 +18,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"gitlab.ceriath.net/libs/goBlue/log"
 )
 
 const AppName, VersionMajor, VersionMinor, VersionBuild string = "goBlue/util", "0", "1", "s"
@@ -186,4 +187,19 @@ func OpenWebsiteInDefaultBrowser(url string) bool {
 	}
 	cmd := exec.Command(args[0], append(args[1:], url)...)
 	return cmd.Start() == nil
+}
+
+func RemoveIndexFromStringSlice(slice []string, i int) []string {
+	return append(slice[:i], slice[i+1:]...)
+}
+
+func RemoveFromStringSlice(slice []string, el string) []string {
+	var idx int
+	for i, e := range slice {
+		if e == el {
+			idx = i
+			break
+		}
+	}
+	return RemoveIndexFromStringSlice(slice, idx)
 }
