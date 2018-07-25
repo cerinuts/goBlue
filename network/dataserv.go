@@ -10,41 +10,42 @@ package network
 import (
 	"encoding/json"
 	"fmt"
-	"gitlab.ceriath.net/libs/goBlue/log"
 	"io"
 	"net/http"
 	"net/url"
+
+	"code.cerinuts.io/libs/goBlue/log"
 )
 
-//Dataserv offers an api to serve function calls and/or json responses to http.
-//Can also wrap a database-like structure to a http-api.
+//DataServ offers an api to serve function calls and/or json responses to http.
+//Can also wrap a database-like structure to a http-api. Highly optimized for usage with ember-data and is likely to be removed from goBlue
 type DataServ struct {
 	ServeMux *http.ServeMux
 }
 
-//Data array
+//DSJSONResponse contains an array of DSJSONData
 type DSJSONResponse struct {
 	Data []DSJSONData `json:"data"`
 }
 
-//single data object
+//DSJSONSingleResponse contains a single data object
 type DSJSONSingleResponse struct {
 	Data DSJSONData `json:"data"`
 }
 
-//actual data
+//DSJSONData has the actual information
 type DSJSONData struct {
-	Id         string      `json:"id"`
+	ID         string      `json:"id"`
 	Attributes interface{} `json:"attributes"`
 	Type       string      `json:"type"`
 }
 
-//error array
+//DSJSONErrors is an error container
 type DSJSONErrors struct {
 	Errs []DSJSONError `json:"errors"`
 }
 
-//single error
+//DSJSONError is a single error
 type DSJSONError struct {
 	Code   int    `json:"code"`
 	Source string `json:"source"`
@@ -57,14 +58,16 @@ type customError struct {
 	status int
 }
 
-//a simple function thats called on get request
+//DataServFunction is a simple function thats called on get request
 type DataServFunction func() error
-//a function thats called on post request taking input
+
+//DataServPostFunction is a function thats called on post request taking input
 type DataServPostFunction func(url.Values) error
-//a function thats called on patch request
+
+//DataServPatchFunction is a function thats called on patch request
 type DataServPatchFunction func(*io.ReadCloser) error
 
-//Creates a new Dataserv
+//NewDataServ creates a new Dataserver
 func NewDataServ() *DataServ {
 	ds := new(DataServ)
 	ds.ServeMux = http.NewServeMux()
@@ -146,7 +149,7 @@ func (ds *DataServ) RegisterWithPost(route string, jsr DSJSONResponse, fn DataSe
 	})
 }
 
-//RegisterWithPost adds a route that invokes a function on POST request with post form input or a single static response on any other method
+//RegisterSingleWithPost adds a route that invokes a function on POST request with post form input or a single static response on any other method
 func (ds *DataServ) RegisterSingleWithPost(route string, jsr DSJSONSingleResponse, fn DataServPostFunction) {
 	ds.ServeMux.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
 		ds.Headers(w, r)
@@ -220,7 +223,7 @@ func (ds *DataServ) RegisterWithPatch(route string, jsr DSJSONResponse, fn DataS
 	})
 }
 
-//RegisterWithPatch adds a route invoking a function on PATCH or returning a single static response on any other method
+//RegisterSingleWithPatch adds a route invoking a function on PATCH or returning a single static response on any other method
 func (ds *DataServ) RegisterSingleWithPatch(route string, jsr DSJSONSingleResponse, fn DataServPatchFunction) {
 	ds.ServeMux.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "PATCH" {

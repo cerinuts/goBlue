@@ -9,16 +9,17 @@ package settings
 
 import (
 	"encoding/json"
-	"gitlab.ceriath.net/libs/goBlue/log"
 	"os"
 	"path/filepath"
+
+	"gitlab.ceriath.net/libs/goBlue/log"
 )
 
 const AppName, VersionMajor, VersionMinor, VersionBuild string = "goBlue/settings", "0", "1", "s"
 const FullVersion string = AppName + VersionMajor + "." + VersionMinor + VersionBuild
 
-//ReadJsonConfig Reads a json-config file to any struct
-func ReadJsonConfig(filename string, config interface{}) error {
+//ReadJSONConfig Reads a json-config file to any struct
+func ReadJSONConfig(filename string, config interface{}) error {
 	file, err := os.Open(filename)
 	if err != nil {
 		return err
@@ -33,8 +34,8 @@ func ReadJsonConfig(filename string, config interface{}) error {
 	return nil
 }
 
-//WriteJsonConfig writes json-config from any struct
-func WriteJsonConfig(filename string, config interface{}) error {
+//WriteJSONConfig writes json-config from any struct
+func WriteJSONConfig(filename string, config interface{}) error {
 	dir, _ := filepath.Split(filename)
 	err := os.MkdirAll(dir, os.ModePerm)
 	if err != nil {

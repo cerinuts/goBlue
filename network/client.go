@@ -12,21 +12,22 @@ import (
 	"fmt"
 	"net"
 	"time"
-	"gitlab.ceriath.net/libs/goBlue/log"
-	)
+
+	"code.cerinuts.io/libs/goBlue/log"
+)
 
 //Client is a simple network socketclient
 type Client struct {
 	TargetIP, TargetPort string
 	Connection           *net.Conn
-	Reader				*bufio.Reader
+	Reader               *bufio.Reader
 }
 
 //Connect connects to ip + port
 func (c *Client) Connect(ip string, port string) (err error) {
 	c.TargetIP = ip
 	c.TargetPort = port
-	conn, err := net.DialTimeout("tcp", ip+":"+port, time.Duration(10 * time.Second))
+	conn, err := net.DialTimeout("tcp", ip+":"+port, 10*time.Second)
 	c.Connection = &conn
 	reader := bufio.NewReader(*(c.Connection))
 	c.Reader = reader
@@ -38,7 +39,7 @@ func (c *Client) Connect(ip string, port string) (err error) {
 }
 
 //Recv waits and receives messages. BLOCKING
-func (c *Client) Recv() (msg string, err error){
+func (c *Client) Recv() (msg string, err error) {
 	line, _, err := (*c.Reader).ReadLine()
 	if err != nil {
 		return
@@ -53,7 +54,7 @@ func (c *Client) Sendln(msg string) {
 }
 
 //Close closes the client
-func (c *Client) Close() (err error){
+func (c *Client) Close() (err error) {
 	err = (*(c.Connection)).Close()
 	return
 }

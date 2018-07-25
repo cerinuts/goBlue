@@ -4,7 +4,7 @@ This Package is part of the "goBlue"-Library
 It is licensed under the MIT License
 */
 
-//Log offers various logging options
+//Package log offers various logging options
 package log
 
 import (
@@ -19,14 +19,16 @@ const AppName, VersionMajor, VersionMinor, VersionBuild string = "goBlue/log", "
 const FullVersion string = AppName + VersionMajor + "." + VersionMinor + VersionBuild
 
 const LevelPanic, LevelFatal, LevelError, LevelInfo, LevelDebug int = 1, 2, 3, 4, 5
+
+//Defines if the logger logs everything to one file or creates one for each day (useful for logrotate)
 const LogfileBehaviourDaily, LogfileBehaviourAll int = 1, 0
 const errorlog string = "error.log"
 
-//Defines the current loglevel
+//CurrentLevel defines the current loglevel
 var CurrentLevel = 4
 
-//Defines current logfile behaviour
-var CurrentLogFileBehaviour = 0
+//CurrentLogFileBehaviour defines current logfile behaviour, defaults to LogfileBehaviourAll
+var CurrentLogFileBehaviour = LogfileBehaviourAll
 
 //Define which outputs are used, note that panic always prints to stderr and error file, while fatal and error always
 //print to error file, if printToFile is true those additionally printed to normal log
@@ -35,7 +37,7 @@ var PrintToStderr, PrintToStdout, PrintToFile = true, false, true
 //Logpath and filename for the normal log
 var Path, Logfilename = ".", "log.log"
 
-//log panic, NOTE that this will throw a panic at the end!
+//P logs panic, NOTE that this will throw a panic at the end!
 func P(a ...interface{}) {
 	if CurrentLevel < LevelPanic {
 		return
@@ -53,7 +55,7 @@ func P(a ...interface{}) {
 	//	os.Exit(1)
 }
 
-//log fatal
+//F logs fatal
 func F(a ...interface{}) {
 	if CurrentLevel < LevelFatal {
 		return
@@ -70,7 +72,7 @@ func F(a ...interface{}) {
 	printToFile(appended, true)
 }
 
-//log error
+//E logs error
 func E(a ...interface{}) {
 	if CurrentLevel < LevelError {
 		return
@@ -87,7 +89,7 @@ func E(a ...interface{}) {
 	printToFile(appended, true)
 }
 
-//log info
+//I logs info
 func I(a ...interface{}) {
 	if CurrentLevel < LevelInfo {
 		return
@@ -101,7 +103,7 @@ func I(a ...interface{}) {
 	printToFile(appended, false)
 }
 
-//log debug
+//D logs debug
 func D(a ...interface{}) {
 	if CurrentLevel < LevelDebug {
 		return

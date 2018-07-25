@@ -49,7 +49,7 @@ func SaveCopy(src, dst string) error {
 	return nil
 }
 
-//Waits for userinput to continue
+//WaitForEnter for userinput to continue
 func WaitForEnter() {
 	fmt.Print("Press 'Enter' to continue...")
 	bufio.NewReader(os.Stdin).ReadBytes('\n')
@@ -86,19 +86,17 @@ func GetRandomAlphanumericString(n int) string {
 //while it removes 0 valued parts
 func NormalizeDurationStringHMS(d time.Duration) string {
 	seconds := int(d.Seconds())
-	minutes := int(seconds / 60)
+	minutes := seconds / 60
 	seconds = seconds - minutes*60
-	hours := int(minutes / 60)
+	hours := minutes / 60
 	minutes = minutes - hours*60
 
-	str := fmt.Sprintf("%d hours %d minutes %d seconds", int(hours), int(minutes), int(seconds))
+	str := fmt.Sprintf("%d hours %d minutes %d seconds", hours, minutes, seconds)
 
 	if strings.HasSuffix(str, " 0 seconds") {
 		str = str[:len(str)-9]
 	}
-	if strings.HasPrefix(str, "0 hours") {
-		str = str[7:]
-	}
+	str = strings.TrimPrefix(str, "0 hours")
 	str = strings.Replace(str, " 0 minutes", " ", 1)
 	return str
 }
@@ -141,12 +139,12 @@ func TimeDifferenceYMDHMS(a, b time.Time) (year, month, day, hour, min, sec int)
 	h1, m1, s1 := a.Clock()
 	h2, m2, s2 := b.Clock()
 
-	year = int(y2 - y1)
+	year = y2 - y1
 	month = int(M2 - M1)
-	day = int(d2 - d1)
-	hour = int(h2 - h1)
-	min = int(m2 - m1)
-	sec = int(s2 - s1)
+	day = d2 - d1
+	hour = h2 - h1
+	min = m2 - m1
+	sec = s2 - s1
 
 	// Normalize negative values
 	if sec < 0 {
@@ -175,6 +173,7 @@ func TimeDifferenceYMDHMS(a, b time.Time) (year, month, day, hour, min, sec int)
 	return
 }
 
+//OpenWebsiteInDefaultBrowser uses the system api to open a website in the default browser
 func OpenWebsiteInDefaultBrowser(url string) bool {
 	var args []string
 	switch runtime.GOOS {
@@ -189,10 +188,12 @@ func OpenWebsiteInDefaultBrowser(url string) bool {
 	return cmd.Start() == nil
 }
 
+//RemoveIndexFromStringSlice removes a string on index i from a slice
 func RemoveIndexFromStringSlice(slice []string, i int) []string {
 	return append(slice[:i], slice[i+1:]...)
 }
 
+//RemoveFromStringSlice removes the first matching string from a slice
 func RemoveFromStringSlice(slice []string, el string) []string {
 	var idx int
 	for i, e := range slice {

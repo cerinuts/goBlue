@@ -4,7 +4,7 @@ This Package is part of the "goBlue"-Library
 It is licensed under the MIT License
 */
 
-//Clockwork runs scheduled tasks
+//Package clockwork runs scheduled tasks
 package clockwork
 
 import (
@@ -12,12 +12,13 @@ import (
 	"sync"
 	"time"
 
-	"gitlab.ceriath.net/libs/goBlue/log"
+	"code.cerinuts.io/libs/goBlue/log"
 )
 
 const AppName, VersionMajor, VersionMinor, VersionBuild string = "goBlue/Clockwork", "0", "1", "s"
 const FullVersion string = AppName + VersionMajor + "." + VersionMinor + VersionBuild
 
+// Clockwork singleton
 var Clockwork _clockwork
 var interrupts map[string]chan bool
 
@@ -50,7 +51,7 @@ func (cw *_clockwork) RepeatEvery(d time.Duration, fn func(), onStart bool, id s
 	go func() {
 		defer cw.cw.Waitgroup.Done()
 		defer delete(interrupts, id)
-		for range time.Tick(d) {
+		for range time.NewTicker(d).C {
 			select {
 			case <-interrupt:
 				return

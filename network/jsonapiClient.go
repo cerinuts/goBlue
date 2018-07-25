@@ -15,19 +15,22 @@ import (
 	"strconv"
 	"time"
 
-	"gitlab.ceriath.net/libs/goBlue/log"
+	"code.cerinuts.io/libs/goBlue/log"
 )
 
-type JsonApiClient struct {
+//JSONAPIClient offers a simple json api client interface
+type JSONAPIClient struct {
 }
 
-type JsonError struct {
+//JSONError contains a simple JSON error message
+type JSONError struct {
 	Error   string `json:"error"`
 	Status  int    `json:"status"`
 	Message string `json:"message"`
 }
 
-type JsonError2 struct {
+//JSONError2 contains another common JSON error message
+type jsonError2 struct {
 	Status struct {
 		StatusCode int    `json:"status_code"`
 		Message    string `json:"message"`
@@ -35,13 +38,13 @@ type JsonError2 struct {
 }
 
 //String converts a json error to pretty loggable/printable string
-func (jso *JsonError) String() string {
+func (jso *JSONError) String() string {
 	return strconv.Itoa(jso.Status) + "-" + jso.Error + "-" + jso.Message
 }
 
 //Request calls url with GET and sets header. Tries to parse repsonse into any struct, returns jsonerror if request returned one
 //or error on internal errors
-func (jac *JsonApiClient) Request(url string, header map[string]string, response interface{}) (*JsonError, error) {
+func (jac *JSONAPIClient) Request(url string, header map[string]string, response interface{}) (*JSONError, error) {
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		log.E(err)
@@ -53,7 +56,7 @@ func (jac *JsonApiClient) Request(url string, header map[string]string, response
 
 //Delete calls url with DELETE and sets header. Tries to parse repsonse into any struct, returns jsonerror if request returned one
 //or error on internal errors
-func (jac *JsonApiClient) Delete(url string, header map[string]string, response interface{}) (*JsonError, error) {
+func (jac *JSONAPIClient) Delete(url string, header map[string]string, response interface{}) (*JSONError, error) {
 	req, err := http.NewRequest(http.MethodDelete, url, nil)
 	if err != nil {
 		log.E(err)
@@ -65,7 +68,7 @@ func (jac *JsonApiClient) Delete(url string, header map[string]string, response 
 
 //Put calls url with PUT with given data and sets header. Tries to parse repsonse into any struct, returns jsonerror if request returned one
 //or error on internal errors
-func (jac *JsonApiClient) Put(url string, header map[string]string, data interface{}, response interface{}) (*JsonError, error) {
+func (jac *JSONAPIClient) Put(url string, header map[string]string, data interface{}, response interface{}) (*JSONError, error) {
 
 	body, marshErr := json.Marshal(data)
 	if marshErr != nil {
@@ -84,7 +87,7 @@ func (jac *JsonApiClient) Put(url string, header map[string]string, data interfa
 
 //Post calls url with POST with given data and sets header. Tries to parse repsonse into any struct, returns jsonerror if request returned one
 //or error on internal errors
-func (jac *JsonApiClient) Post(url string, header map[string]string, data interface{}, response interface{}) (*JsonError, error) {
+func (jac *JSONAPIClient) Post(url string, header map[string]string, data interface{}, response interface{}) (*JSONError, error) {
 
 	body, marshErr := json.Marshal(data)
 	if marshErr != nil {
@@ -102,7 +105,7 @@ func (jac *JsonApiClient) Post(url string, header map[string]string, data interf
 }
 
 //runRequest actually runs the request prepared by functions above
-func (jac *JsonApiClient) runRequest(req *http.Request, header map[string]string, response interface{}) (*JsonError, error) {
+func (jac *JSONAPIClient) runRequest(req *http.Request, header map[string]string, response interface{}) (*JSONError, error) {
 	cli := &http.Client{
 		Timeout: time.Second * 10,
 	}
@@ -129,26 +132,25 @@ func (jac *JsonApiClient) runRequest(req *http.Request, header map[string]string
 	}
 
 	if res.StatusCode == 200 {
-		json.Unmarshal(body, &response)
-		return nil, nil
-	} else {
-		//try if its an error
-		jsoErr := new(JsonError)
-		marshErr := json.Unmarshal(body, &jsoErr)
-		if marshErr == nil {
-			return jsoErr, nil
-		}
-		//try if its an error2
-		jsoErr2 := new(JsonError2)
-		marshErr = json.Unmarshal(body, &jsoErr2)
-		if marshErr == nil {
-			jsoErr.Status = jsoErr2.Status.StatusCode
-			jsoErr.Message = jsoErr2.Status.Message
-			jsoErr.Error = jsoErr2.Status.Message
-			return jsoErr, nil
-		}
-		//otherwise some error
-		log.E(marshErr, res.StatusCode, string(body))
-		return nil, marshErr
+		return nil, json.Unmarshal(body, &response)
 	}
+	//try if its an error
+	jsoErr := new(JSONError)
+	marshErr := json.Unmarshal(body, &jsoErr)
+	if marshErr == nil {
+		return jsoErr, nil
+	}
+	//try if its an error2
+	jsoErr2 := new(jsonError2)
+	marshErr = json.Unmarshal(body, &jsoErr2)
+	if marshErr == nil {
+		jsoErr.Status = jsoErr2.Status.StatusCode
+		jsoErr.Message = jsoErr2.Status.Message
+		jsoErr.Error = jsoErr2.Status.Message
+		return jsoErr, nil
+	}
+	//otherwise some error
+	log.E(marshErr, res.StatusCode, string(body))
+	return nil, marshErr
+
 }

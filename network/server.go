@@ -4,12 +4,14 @@ This Package is part of the "goBlue"-Library
 It is licensed under the MIT License
 */
 
-//Network offers various network tools
+//Package network offers various network tools
 package network
 
 import (
 	"bufio"
 	"net"
+
+	"code.cerinuts.io/libs/goBlue/log"
 )
 
 //Server is a simple socketserver. Not doing anything, pretty useless atm. Seriously.
@@ -31,7 +33,8 @@ func (s *Server) Create(address, port string) {
 		println("waiting..")
 		conn, err := ln.Accept()
 		if err != nil {
-			//
+			log.E(err)
+			continue
 		}
 		println("accepted")
 		status, err := bufio.NewReader(conn).ReadString('\n')

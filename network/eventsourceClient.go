@@ -1,3 +1,10 @@
+/*
+Copyright (c) 2017 ceriath
+This Package is part of the "goBlue"-Library
+It is licensed under the MIT License
+*/
+
+//Package network offers various network tools
 package network
 
 import (
@@ -10,23 +17,26 @@ import (
 	"strings"
 	"time"
 
-	"gitlab.ceriath.net/libs/goBlue/log"
+	"code.cerinuts.io/libs/goBlue/log"
 )
 
-const PARSE_CODE_ERR = -1
-const PARSE_CODE_OK = 0
-const PARSE_CODE_DISPATCH = 1
+const parseCodeErr = -1
+const parseCodeOk = 0
+const parseCodeDispatch = 1
 
+//EventsourceClient is a simple Client for Eventsource streams
 type EventsourceClient struct {
 	Stream *EventStream
 }
 
+//Event contains information about a single event
 type Event struct {
-	Id      string
+	ID      string
 	Name    string
 	Payload string
 }
 
+//EventStream contains a channel with events
 type EventStream struct {
 	client     *http.Client
 	req        *http.Request
@@ -36,6 +46,7 @@ type EventStream struct {
 	lastEvent  string
 }
 
+//Subscribe subscribes to the given Eventsource-Server URL
 func (ec *EventsourceClient) Subscribe(url string) (*EventStream, error) {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -63,6 +74,7 @@ func (ec *EventsourceClient) Subscribe(url string) (*EventStream, error) {
 	return stream, nil
 }
 
+//Close closes the stream
 func (ec *EventsourceClient) Close() {
 	if ec.Stream.closed {
 		return
@@ -83,7 +95,7 @@ func (stream *EventStream) connect() (r io.ReadCloser, err error) {
 	}
 	if resp.StatusCode != 200 {
 		code, _ := ioutil.ReadAll(resp.Body)
-		errors.New(string(code))
+		err = errors.New(string(code))
 	}
 	r = resp.Body
 	return
@@ -104,15 +116,13 @@ func (stream *EventStream) reconnect() {
 	}
 }
 
-func (stream *EventStream) start(reader io.ReadCloser) {
-	defer reader.Close()
-
+func (stream *EventStream) start(reader io.Reader) {
 	stream.recv(reader)
 
 	stream.reconnect()
 }
 
-func (stream *EventStream) recv(reader io.ReadCloser) {
+func (stream *EventStream) recv(reader io.Reader) {
 
 	buffer := bufio.NewReader(reader)
 	ev := new(Event)
@@ -128,16 +138,16 @@ func (stream *EventStream) recv(reader io.ReadCloser) {
 		}
 
 		switch parse(ev, stream, line) {
-		case PARSE_CODE_OK:
+		case parseCodeOk:
 			{
 				continue
 			}
-		case PARSE_CODE_DISPATCH:
+		case parseCodeDispatch:
 			{
 				go dispatch(stream, ev)
 				ev = new(Event)
 			}
-		case PARSE_CODE_ERR:
+		case parseCodeErr:
 			{
 				continue
 			}
@@ -150,10 +160,10 @@ func parse(ev *Event, evS *EventStream, line string) (code int) {
 	line = strings.TrimSpace(line)
 
 	if len(line) < 1 {
-		return PARSE_CODE_DISPATCH
+		return parseCodeDispatch
 	}
 	if strings.HasPrefix(line, ":") {
-		return PARSE_CODE_OK
+		return parseCodeOk
 	}
 
 	var field string
@@ -171,7 +181,7 @@ func parse(ev *Event, evS *EventStream, line string) (code int) {
 	case "event":
 		{
 			ev.Name = value
-			return PARSE_CODE_OK
+			return parseCodeOk
 		}
 	case "data":
 		{
@@ -179,13 +189,13 @@ func parse(ev *Event, evS *EventStream, line string) (code int) {
 				ev.Payload += "\n"
 			}
 			ev.Payload += value
-			return PARSE_CODE_OK
+			return parseCodeOk
 		}
 	case "id":
 		{
 			evS.lastEvent = value
-			ev.Id = value
-			return PARSE_CODE_OK
+			ev.ID = value
+			return parseCodeOk
 		}
 	case "retry":
 		{
@@ -193,10 +203,10 @@ func parse(ev *Event, evS *EventStream, line string) (code int) {
 			if err != nil {
 				evS.timeout = time.Millisecond * time.Duration(to)
 			}
-			return PARSE_CODE_OK
+			return parseCodeOk
 		}
 	}
-	return PARSE_CODE_OK
+	return parseCodeOk
 
 }
 

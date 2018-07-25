@@ -4,31 +4,32 @@ This Package is part of the "goBlue"-Library
 It is licensed under the MIT License
 */
 
-//Archium is a simple PubSub-Service
+//Package archium is a simple PubSub-Service
 package archium
 
 import (
 	"fmt"
-	"gitlab.ceriath.net/libs/goBlue/log"
 	"strings"
+
+	"code.cerinuts.io/libs/goBlue/log"
 )
 
-const AppName, VersionMajor, VersionMinor, VersionBuild string = "goBlue/archium", "0", "1", "s"
+const AppName, VersionMajor, VersionMinor, VersionBuild string = "goBlue/archium", "0", "2", "s"
 const FullVersion string = AppName + VersionMajor + "." + VersionMinor + VersionBuild
 
 //Types
 
-//An ArchiumEvent is an event that is fired by something. Data is a map<string, anything>,
+//Event is an event that is fired by something. Data is a map<string, anything>,
 //EventType is the type of the Event, often referred to as "topic"
-type ArchiumEvent struct {
+type Event struct {
 	EventType, EventSource string
 	Data                   map[string]interface{}
 }
 
-//Interface for an Event-Listener. Trigger is activated if type of an occured event matches any type returned
+//EventListener provides an interface for custom listeners. Trigger is activated if type of an occured event matches any type returned
 //by GetTypes. GetTypes also can return static strings.
-type ArchiumEventListener interface {
-	Trigger(ae ArchiumEvent)
+type EventListener interface {
+	Trigger(ae Event)
 	GetTypes() []string
 }
 
@@ -39,10 +40,10 @@ type _ArchiumCore struct {
 
 //the actual single core
 type archiumCore struct {
-	listener []ArchiumEventListener
+	listener []EventListener
 }
 
-// The Archium Core - Singleton
+// ArchiumCore - Singleton
 var ArchiumCore _ArchiumCore
 
 //creates new singleton on init
@@ -52,8 +53,8 @@ func init() {
 	}
 }
 
-//Fires an event, checks all listeners for their type and fires if necessary
-func (core *_ArchiumCore) FireEvent(ev ArchiumEvent) {
+//FireEvent fires an event, checks all listeners for their type and fires if necessary
+func (core *_ArchiumCore) FireEvent(ev Event) {
 	for _, el := range core.ac.listener {
 		for _, t := range el.GetTypes() {
 			if checkTypes(t, ev.EventType) {
@@ -65,7 +66,7 @@ func (core *_ArchiumCore) FireEvent(ev ArchiumEvent) {
 
 //Core Util
 
-//checks if two types match, considers wildcards
+//checkTypes checks if two types match, considers wildcards
 func checkTypes(lType, eType string) bool {
 	lType = strings.ToLower(lType)
 	eType = strings.ToLower(eType)
@@ -98,38 +99,39 @@ func checkTypes(lType, eType string) bool {
 	return false
 }
 
-//Add a new Listener
-func (core *_ArchiumCore) Register(al ArchiumEventListener) {
+//Register adds a new Listener
+func (core *_ArchiumCore) Register(al EventListener) {
 	core.ac.listener = append(core.ac.listener, al)
 }
 
-//Add a new Listener
-func (core *_ArchiumCore) Deregister(al ArchiumEventListener) {
+//Deregister removes a listener
+func (core *_ArchiumCore) Deregister(al EventListener) {
 	var idx int
-	for i, el := range core.ac.listener{
-		if(el == al){
+	for i, el := range core.ac.listener {
+		if el == al {
 			idx = i
 		}
 	}
-	core.ac.listener  = append(core.ac.listener[:idx], core.ac.listener[idx+1:]...) 
+	core.ac.listener = append(core.ac.listener[:idx], core.ac.listener[idx+1:]...)
 }
 
 // Events
 
-//Create a new event - does NOT fire it!
-func CreateEvent() *ArchiumEvent {
-	ev := new(ArchiumEvent)
+//CreateEvent creates a new event - does NOT fire it!
+func CreateEvent() *Event {
+	ev := new(Event)
 	ev.Data = make(map[string]interface{})
 	return ev
 }
 
 // Debug Listener
 
-//The debugListener is a basic listener which listens to everything and logs it to debug
-type ArchiumDebugListener struct {
+//DebugListener is a basic listener which listens to everything and logs it to debug
+type DebugListener struct {
 }
 
-func (adl *ArchiumDebugListener) Trigger(ae ArchiumEvent) {
+//Trigger of the DebugListener logs everything on LogLevel debug
+func (adl *DebugListener) Trigger(ae Event) {
 	mapstr := ""
 	for k, v := range ae.Data {
 		mapstr = mapstr + " --- " + k + ":" + fmt.Sprintf("%b", v)
@@ -137,6 +139,7 @@ func (adl *ArchiumDebugListener) Trigger(ae ArchiumEvent) {
 	log.D(ae.EventType, ae.EventSource, mapstr)
 }
 
-func (adl *ArchiumDebugListener) GetTypes() []string {
+//GetTypes returns a single wildcard for everything to catch every single Event
+func (adl *DebugListener) GetTypes() []string {
 	return []string{"*"}
 }
