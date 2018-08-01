@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2017 ceriath
+Copyright (c) 2018 ceriath
 This Package is part of the "goBlue"-Library
 It is licensed under the MIT License
 */

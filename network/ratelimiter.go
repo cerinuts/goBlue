@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2017 ceriath
+Copyright (c) 2018 ceriath
 This Package is part of the "goBlue"-Library
 It is licensed under the MIT License
 */
@@ -31,7 +31,7 @@ func (t *Tokenbucket) WaitUntil(ctx context.Context) error {
 	return t.Limiter.Wait(ctx)
 }
 
-//WaitUntil waits until a token can be used
+//Wait waits until a token can be used
 func (t *Tokenbucket) Wait() error {
 	ctx := context.Background()
 	return t.Limiter.Wait(ctx)

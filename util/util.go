@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2017 ceriath
+Copyright (c) 2018 ceriath
 This Package is part of the "goBlue"-Library
 It is licensed under the MIT License
 */
@@ -19,7 +19,7 @@ import (
 	"strings"
 	"time"
 
-	"gitlab.ceriath.net/libs/goBlue/log"
+	"code.cerinuts.io/libs/goBlue/log"
 )
 
 const AppName, VersionMajor, VersionMinor, VersionBuild string = "goBlue/util", "0", "1", "s"
