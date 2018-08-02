@@ -15,13 +15,42 @@ import (
 	"time"
 )
 
-const AppName, VersionMajor, VersionMinor, VersionBuild string = "goBlue/log", "0", "1", "s"
+//AppName is the name of the application
+const AppName string = "goBlue/log"
+
+//VersionMajor 0 means in development, >1 ensures compatibility with each minor version, but breakes with new major version
+const VersionMajor string = "0"
+
+//VersionMinor introduces changes that require a new version number. If the major version is 0, they are likely to break compatibilty
+const VersionMinor string = "1"
+
+//VersionBuild is the type of this release. s(table), b(eta), d(evelopment), n(ightly)
+const VersionBuild string = "s"
+
+//FullVersion contains the full name and version of this package in a printable string
 const FullVersion string = AppName + VersionMajor + "." + VersionMinor + VersionBuild
 
-const LevelPanic, LevelFatal, LevelError, LevelInfo, LevelDebug int = 1, 2, 3, 4, 5
+//LevelPanic program cannot continue. Will actually cause a panic!
+const LevelPanic int = 1
 
-//Defines if the logger logs everything to one file or creates one for each day (useful for logrotate)
-const LogfileBehaviourDaily, LogfileBehaviourAll int = 1, 0
+//LevelFatal fatal error, program can at least exit gracefully
+const LevelFatal int = 2
+
+//LevelError any error occured
+const LevelError int = 3
+
+//LevelInfo just some information
+const LevelInfo int = 4
+
+//LevelDebug debug information
+const LevelDebug int = 5
+
+//LogfileBehaviourDaily Defines if the logger logs everything to one file for each day (useful for logrotate)
+const LogfileBehaviourDaily int = 1
+
+//LogfileBehaviourAll Defines if the logger logs everything to one single file
+const LogfileBehaviourAll int = 0
+
 const errorlog string = "error.log"
 
 //CurrentLevel defines the current loglevel
@@ -30,12 +59,21 @@ var CurrentLevel = 4
 //CurrentLogFileBehaviour defines current logfile behaviour, defaults to LogfileBehaviourAll
 var CurrentLogFileBehaviour = LogfileBehaviourAll
 
-//Define which outputs are used, note that panic always prints to stderr and error file, while fatal and error always
-//print to error file, if printToFile is true those additionally printed to normal log
-var PrintToStderr, PrintToStdout, PrintToFile = true, false, true
+//PrintToStderr defines which outputs are used, note that panic always prints to stderr and ignores this setting, while Info and Debug will never print to stderr
+var PrintToStderr = true
 
-//Logpath and filename for the normal log
-var Path, Logfilename = ".", "log.log"
+//PrintToStdout defines which outputs are used, note that everything will be printed to stdout while nothing is printed by default
+var PrintToStdout = false
+
+//PrintToFile defines which outputs are used, note that panic, fatal and error always
+//prints to error.log, if printToFile is true those are printed to normal log file additionally
+var PrintToFile = true
+
+//Path for the default log
+var Path = "."
+
+//Logfilename name of the default log
+var Logfilename = "log.log"
 
 //P logs panic, NOTE that this will throw a panic at the end!
 func P(a ...interface{}) {

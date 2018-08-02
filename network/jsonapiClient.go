@@ -42,7 +42,7 @@ func (jso *JSONError) String() string {
 	return strconv.Itoa(jso.Status) + "-" + jso.Error + "-" + jso.Message
 }
 
-//Request calls url with GET and sets header. Tries to parse repsonse into any struct, returns jsonerror if request returned one
+//Request calls url with GET and sets header. Tries to parse response into any struct, returns jsonerror if request returned one
 //or error on internal errors
 func (jac *JSONAPIClient) Request(url string, header map[string]string, response interface{}) (*JSONError, error) {
 	req, err := http.NewRequest(http.MethodGet, url, nil)
@@ -54,7 +54,7 @@ func (jac *JSONAPIClient) Request(url string, header map[string]string, response
 	return jac.runRequest(req, header, response)
 }
 
-//Delete calls url with DELETE and sets header. Tries to parse repsonse into any struct, returns jsonerror if request returned one
+//Delete calls url with DELETE and sets header. Tries to parse response into any struct, returns jsonerror if request returned one
 //or error on internal errors
 func (jac *JSONAPIClient) Delete(url string, header map[string]string, response interface{}) (*JSONError, error) {
 	req, err := http.NewRequest(http.MethodDelete, url, nil)
@@ -66,7 +66,7 @@ func (jac *JSONAPIClient) Delete(url string, header map[string]string, response 
 	return jac.runRequest(req, header, response)
 }
 
-//Put calls url with PUT with given data and sets header. Tries to parse repsonse into any struct, returns jsonerror if request returned one
+//Put calls url with PUT with given data and sets header. Tries to parse response into any struct, returns jsonerror if request returned one
 //or error on internal errors
 func (jac *JSONAPIClient) Put(url string, header map[string]string, data interface{}, response interface{}) (*JSONError, error) {
 
@@ -85,7 +85,7 @@ func (jac *JSONAPIClient) Put(url string, header map[string]string, data interfa
 
 }
 
-//Post calls url with POST with given data and sets header. Tries to parse repsonse into any struct, returns jsonerror if request returned one
+//Post calls url with POST with given data and sets header. Tries to parse response into any struct, returns jsonerror if request returned one
 //or error on internal errors
 func (jac *JSONAPIClient) Post(url string, header map[string]string, data interface{}, response interface{}) (*JSONError, error) {
 
