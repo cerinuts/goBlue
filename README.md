@@ -1,5 +1,6 @@
 # goBlue
 [![GoDoc](https://godoc.org/code.cerinuts.io/libs/goBlue?status.svg)](https://godoc.org/code.cerinuts.io/libs/goBlue)
+[![Go Report Card](https://goreportcard.com/badge/github.com/cerinuts/goBlue)](https://goreportcard.com/report/github.com/cerinuts/goBlue)
 
 Development happens over at [code.cerinuts.io](https://code.cerinuts.io)
 There is also a [github mirror](https://github.com/cerinuts/goBlue)
