@@ -21,7 +21,7 @@ const AppName string = "goBlue/settings"
 //VersionMajor 0 means in development, >1 ensures compatibility with each minor version, but breakes with new major version
 const VersionMajor string = "0"
 
-//VersionMinor introduces changes that require a new version number. If the major version is 0, they are likely to break compatibilty
+//VersionMinor introduces changes that require a new version number. If the major version is 0, they are likely to break compatibility
 const VersionMinor string = "1"
 
 //VersionBuild is the type of this release. s(table), b(eta), d(evelopment), n(ightly)
