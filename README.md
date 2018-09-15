@@ -3,6 +3,8 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/cerinuts/goBlue)](https://goreportcard.com/report/github.com/cerinuts/goBlue)
 [![Build Status](https://travis-ci.com/cerinuts/goBlue.svg?branch=master)](https://travis-ci.com/cerinuts/goBlue)
 
+Offers some general functions and utility i use in some other projects.
+
 Development happens over at [code.cerinuts.io](https://code.cerinuts.io)
 There is also a [github mirror](https://github.com/cerinuts/goBlue)
 
